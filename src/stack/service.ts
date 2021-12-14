@@ -81,7 +81,7 @@ export default class Service extends cdk.Stack {
       serviceName: `${id}`,
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(props?.registry, tag),
-        containerPort: 3000,
+        containerPort: 80,
         enableLogging: true,
         logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${id}`}),
         environment: {

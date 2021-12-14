@@ -58,9 +58,11 @@ pipelines:
       static:
         - DEBIAN_FRONTEND=noninteractive
         - STACK_TYPE=aws-ecs-fargate
-        - ORG=schier-products
+        - ORG=schierproducts
         - REPO=sample-app
-        - REF=pipeline-test
+        - GIT_REPO=grease-monkey
+        - REF=docker-deploy-test-1
+        - TAG=docker-deploy-test-1
         - AWS_REGION=us-east-1
       secrets:
         - GITHUB_TOKEN
@@ -77,18 +79,21 @@ pipelines:
           - git
           - unzip
           - python
-        #bind:
-        #- /Users/slajax/repos/cto.ai/clients/schier/grease-monkey:/ops/application
+        bind:
+        - /Users/dougniccum/Sites/grease-monkey:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
           - export PATH=~/bin:$PATH
           - aws --version
-          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-          - cd $REPO && ls -asl
+          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$GIT_REPO
+          - cd $GIT_REPO && ls -asl
+          - git checkout tags/$TAG -b $REF # Checkout for the specific tag
+          - sed -i "s,https://,https://${GITHUB_TOKEN}@,g" ./.gitmodules
+          - git submodule update --init --recursive # Pulls down the submodules
           #- cd application && ls -asl
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO
-          - docker build -f Dockerfile-php-development -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF .
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF
 services:
   - name: sample-app:0.1.0
