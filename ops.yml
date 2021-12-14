@@ -89,7 +89,8 @@ pipelines:
           - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$GIT_REPO
           - cd $GIT_REPO && ls -asl
           - git checkout tags/$TAG -b $REF # Checkout for the specific tag
-          - git submodule update --init # Pulls down the submodules
+          - sed -i "s,https://,https://${GITHUB_TOKEN}@,g" ./.gitmodules
+          - git submodule update --init --recursive # Pulls down the submodules
           #- cd application && ls -asl
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF .
