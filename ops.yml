@@ -1,0 +1,135 @@
+version: "1"
+commands:
+  - name: setup:0.2.0
+    run: ./node_modules/.bin/ts-node /ops/src/setup.ts
+    description: "setup an environment"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+  - name: deploy:0.2.0
+    run: ./node_modules/.bin/ts-node /ops/src/deploy.ts
+    description: "deploy to an environment"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+  - name: destroy:0.1.0
+    run: ./node_modules/.bin/ts-node /ops/src/destroy.ts
+    description: "destroy an environment"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+  - name: ssh:0.1.0
+    run: ./node_modules/.bin/ts-node /ops/src/ssh.ts
+    description: "connect to bastion with ssh"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+  - name: tunnel:0.1.0
+    run: ./node_modules/.bin/ts-node /ops/src/tunnel.ts
+    description: "connect to bastion with ssh"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+  - name: vault:0.1.0
+    run: ./node_modules/.bin/ts-node /ops/src/vault.ts
+    description: "manage secrets vault"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-east-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    help:
+      usage: ops run vault <sub-cmd> <--key> <--value>
+      arguments: 
+        init: 'init the environments vault'
+        create: 'set a key in the enviroment vault'
+        list: 'list keys in the environment vault'
+        remove: ' remove a specific key in the environment vault'
+        destroy: 'destroy the environment vault'
+pipelines:
+  - name: react-pipeline:0.2.0
+    description: build a release for deployment on fargate
+    env:
+      static:
+        - DEBIAN_FRONTEND=noninteractive
+        - ORG=workflows
+        - REPO=sample-react
+        - REF=new
+        - AWS_REGION=us-west-1
+      secrets:
+        - GITHUB_TOKEN
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    events:
+      - "github:workflows-sh/sample-react:pull_request.opened"
+    jobs:
+      - name: sample-app-build-job
+        description: example build step
+        packages:
+          - git
+          - unzip
+          - python
+        # bind:
+          # - /Users/campbell/Development/hackCapital/ops/sample-wordpress:/ops/application
+        steps:
+          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
+          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
+          - export PATH=~/bin:$PATH
+          - aws --version
+          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          - cd $REPO && ls -asl
+          # - cd application && ls -asl
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app:$REF
+services:
+  - name: sample-app:0.1.0
+    description: preview of sample app
+    run: node sample-app/app.js
+    port: [ '8080:8080' ]
+    domain: ""
+    env:
+      static:
+        - PORT=8080
+        - DB_HOST=localhost
+        - DB_PORT=3600
+        - DB_USER=fake
+      secrets:
+        - SLACK_SIGNING_SECRET
+        - SLACK_BOT_TOKEN
+    events:
+     - "github:kc-dot-io/sample-app:pull_request.merged"
+    trigger:
+     - build
+     - publish
+     - start
+
