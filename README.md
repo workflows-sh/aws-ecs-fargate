@@ -6,3 +6,5 @@
 
 # Documentation 
 
+## License 
+MIT
