@@ -13,8 +13,13 @@ import * as elasticache from './redis'
 import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
 
 interface StackProps {
-  repo: string,
-  tag: string,
+  org: string
+  env: string
+  repo: string
+  tag: string
+  key: string
+  entropy: string
+
   cluster: ecs.Cluster | undefined
   registry: ecr.Repository | undefined
   redis: any | undefined // todo @kc - fix this
@@ -23,7 +28,24 @@ interface StackProps {
  }
 
 export default class Service extends cdk.Stack {
-  public readonly URL: string
+
+  public readonly id: string
+  public readonly org: string
+  public readonly env: string
+  public readonly repo: string
+  public readonly tag: string
+  public readonly key: string
+  public readonly entropy: string
+
+  public readonly vpc: ec2.Vpc
+  public readonly cluster: ecs.Cluster
+  public readonly registry: ecr.Repository
+  public readonly db: rds.ServerlessCluster
+  public readonly mq: sqs.Queue
+  public readonly redis: any | undefined // todo @kc - fix this
+
+  public URL: string
+
   constructor(scope: cdk.Construct, id: string, props?: StackProps) {
     super(scope, id)
 
@@ -43,24 +65,38 @@ export default class Service extends cdk.Stack {
       throw new Error('You must provide a mq for Service')
     }
 
-    const repo = props?.repo ?? 'sample-app'
-    const tag = props?.tag ?? 'main'
+    this.id = id
+    this.org = props?.org ?? 'cto-ai'
+    this.env = props?.env ?? 'dev'
+    this.key = props?.key ?? 'aws-ecs-fargate'
+    this.repo = props?.repo ?? 'sample-app'
+    this.tag = props?.tag ?? 'main'
+    this.entropy = props?.entropy ?? '01012022'
+
+    this.cluster = props.cluster
+    this.registry = props.registry
+    this.db = props.db
+    this.redis = props.redis
+    this.mq = props.mq
+  }
+
+  async initialize() {
 
     // S3
-    const bucket = new s3.Bucket(this, `${id}-bucket`, {
+    const bucket = new s3.Bucket(this, `${this.id}-bucket`, {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html"
     });
 
     // We can enable deployment from the local system using this
-    const src = new s3Deploy.BucketDeployment(this, `${id}-deployment`, {
+    const src = new s3Deploy.BucketDeployment(this, `${this.id}-deployment`, {
       sources: [s3Deploy.Source.asset("./sample-app/dist")],
       destinationBucket: bucket
     });
 
     // Cloudfront
-    const cf = new cloudfront.CloudFrontWebDistribution(this, `${id}-cloudfront`, {
+    const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.id}-cloudfront`, {
       originConfigs: [
         {
           s3OriginSource: {
@@ -72,32 +108,32 @@ export default class Service extends cdk.Stack {
     });
 
     const db_secrets = sm.Secret.fromSecretAttributes(this, 'host', {
-      secretArn: props?.db?.secret?.secretArn
+      secretArn: this.db?.secret?.secretArn
     });
 
-    const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${id}`, {
-      cluster: props?.cluster,
+    const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.id}-${this.repo}`, {
+      cluster: this.cluster,
       desiredCount: 1,
-      serviceName: `${id}`,
+      serviceName: `${this.repo}`,
       taskImageOptions: {
-        image: ecs.ContainerImage.fromEcrRepository(props?.registry, tag),
+        image: ecs.ContainerImage.fromEcrRepository(this.registry, this.tag),
         containerPort: 80,
         enableLogging: true,
-        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${id}`}),
+        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.id}`}),
         environment: {
           DB_HOST: db_secrets.secretValueFromJson('host').toString(),
           DB_PORT: db_secrets.secretValueFromJson('port').toString(),
           DB_USER: db_secrets.secretValueFromJson('username').toString(),
           DB_PASS: db_secrets.secretValueFromJson('password').toString(),
-          REDIS_HOST: props?.redis?.cluster?.attrRedisEndpointAddress,
-          REDIS_PORT: props?.redis?.cluster?.attrRedisEndpointPort,
-          SQS_URL: props?.mq?.queueUrl,
-          SQS_NAME: props?.mq?.queueName,
+          REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
+          REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
+          SQS_URL: this.mq?.queueUrl,
+          SQS_NAME: this.mq?.queueName,
           CF_DOMAIN: cf.distributionDomainName
         }
       }
     });
-    fargateService.service.connections.allowToDefaultPort(props?.db, 'MySQL access')
+    fargateService.service.connections.allowToDefaultPort(this.db, 'MySQL access')
     fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
 
     // Setup AutoScaling policy

@@ -1,11 +1,15 @@
+import fs from 'fs'
+import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
-import { exec } from 'child_process';
+import { exec as oexec } from 'child_process';
+const pexec = util.promisify(oexec);
 
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
+  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
 
-  sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
+  sdk.log(`🛠 Loading the ${ux.color.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}]...`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
@@ -35,15 +39,19 @@ async function run() {
     })
 
   const STACKS:any = {
-    'dev': [`${STACK_REPO}`, STACK_ENV, `${STACK_ENV}-${STACK_REPO}`],
-    'stg': [`${STACK_REPO}`, STACK_ENV, `${STACK_ENV}-${STACK_REPO}`],
-    'prd': [`${STACK_REPO}`, STACK_ENV, `${STACK_ENV}-${STACK_REPO}`],
+    'dev': [`${STACK_REPO}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
+    'stg': [`${STACK_REPO}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
+    'prd': [`${STACK_REPO}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
     'all': [
       `${STACK_REPO}`,
-      'dev', 'stg', 'prd',
-      `dev-${STACK_REPO}`,
-      `stg-${STACK_REPO}`,
-      `stg-${STACK_REPO}`
+
+      `dev-${STACK_TYPE}`,
+      `stg-${STACK_TYPE}`,
+      `prd-${STACK_TYPE}`,
+
+      `dev-${STACK_REPO}-${STACK_TYPE}`,
+      `stg-${STACK_REPO}-${STACK_TYPE}`,
+      `prd-${STACK_REPO}-${STACK_TYPE}`
     ]
   }
 
@@ -51,34 +59,49 @@ async function run() {
     return console.log('Please try again with environment set to <dev|stg|prd|all>')
   }
 
-  sdk.log(`📦 Setting up the stack`)
-  /*const synth =*/ await exec(`npm run cdk synth`, {
-    env: { 
-      ...process.env, 
-      STACK_TYPE: STACK_TYPE, 
-      STACK_REPO: STACK_REPO,
-      STACK_TAG: STACK_TAG
-    }
-  })
-  // synth.stdout.pipe(process.stdout)
-  // synth.stderr.pipe(process.stdout)
+  sdk.log(`\n📦 Setting up the ${ux.colors.white(STACK_TYPE)} ${ux.colors.white(STACK_ENV)} stack for ${ux.colors.white(STACK_TEAM)} team...`)
+  await exec(`./node_modules/.bin/cdk bootstrap`, { env: process.env })
 
-  const deploy = await exec(`npm run cdk deploy ${STACKS[STACK_ENV].join(' ')}`, {
+  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
+      STACK_ENV: STACK_ENV,
       STACK_TYPE: STACK_TYPE, 
       STACK_REPO: STACK_REPO, 
       STACK_TAG: STACK_TAG
     }
   })
-  deploy.stdout.pipe(process.stdout)
-  deploy.stderr.pipe(process.stderr)
+  // Get the AWS command to retrieve kube config
+  .then(async () => {
 
-  sdk.log(`🧹 Cleaning up...`)
-  const cleanup = await exec('rm -Rf ./cdk.out')
-  cleanup.stdout.pipe(process.stdout)
-  cleanup.stderr.pipe(process.stderr)
+    try {
 
+      const json = await fs.readFileSync('./outputs.json', 'utf8')
+      const outputs = JSON.parse(json)
+
+      const CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
+      sdk.setConfig(CONFIG_KEY, JSON.stringify(outputs))
+      
+    } catch (e) {
+      throw e
+    }
+
+  })
+  .catch((err) => {
+    console.log(err)
+    process.exit(1)
+  })
+
+}
+
+// custom promisify exec that pipes stdout too
+async function exec(cmd, env?: any | null) {
+  return new Promise(function(resolve, reject) {
+    const child = oexec(cmd, env)
+    child.stdout.pipe(process.stdout)
+    child.stderr.pipe(process.stderr)
+    child.on('close', (code) => { code ? reject(child.stderr) : resolve(child.stdout) })
+  })
 }
 
 run()
