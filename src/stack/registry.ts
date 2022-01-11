@@ -32,7 +32,7 @@ export default class Registry extends cdk.Stack {
     this.tag = props?.tag ?? 'main'
     this.entropy = props?.entropy ?? '01012022'
 
-    const repository = new ecr.Repository(this, `${this.repo}`, {
+    const repository = new ecr.Repository(this, `${this.repo}-${this.key}`, {
       repositoryName: `${this.repo}`,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     })

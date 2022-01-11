@@ -90,7 +90,7 @@ pipelines:
         - DEBIAN_FRONTEND=noninteractive
         - ORG=kc-dot-io
         - REPO=sample-app
-        - REF=main
+        - REF=latest
         - AWS_REGION=us-west-1
       secrets:
         - GITHUB_TOKEN

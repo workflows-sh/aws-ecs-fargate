@@ -83,20 +83,20 @@ export default class Service extends cdk.Stack {
   async initialize() {
 
     // S3
-    const bucket = new s3.Bucket(this, `${this.id}-bucket`, {
+    const bucket = new s3.Bucket(this, `${this.repo}-${this.key}-bucket`, {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html"
     });
 
     // We can enable deployment from the local system using this
-    const src = new s3Deploy.BucketDeployment(this, `${this.id}-deployment`, {
-      sources: [s3Deploy.Source.asset("./sample-app/dist")],
-      destinationBucket: bucket
-    });
+    // const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
+      // sources: [s3Deploy.Source.asset("./sample-app/dist")],
+      // destinationBucket: bucket
+    // });
 
     // Cloudfront
-    const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.id}-cloudfront`, {
+    const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.repo}-${this.key}-cloudfront`, {
       originConfigs: [
         {
           s3OriginSource: {
@@ -111,15 +111,15 @@ export default class Service extends cdk.Stack {
       secretArn: this.db?.secret?.secretArn
     });
 
-    const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.id}-${this.repo}`, {
+    const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.repo}-${this.key}`, {
       cluster: this.cluster,
       desiredCount: 1,
       serviceName: `${this.repo}`,
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(this.registry, this.tag),
-        containerPort: 80,
+        containerPort: 3000,
         enableLogging: true,
-        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.id}`}),
+        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}`}),
         environment: {
           DB_HOST: db_secrets.secretValueFromJson('host').toString(),
           DB_PORT: db_secrets.secretValueFromJson('port').toString(),
@@ -132,12 +132,12 @@ export default class Service extends cdk.Stack {
           CF_DOMAIN: cf.distributionDomainName
         }
       }
-    });
+    })
     fargateService.service.connections.allowToDefaultPort(this.db, 'MySQL access')
-    fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
+    fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10')
 
     // Setup AutoScaling policy
-    const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 2 });
+    const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 2 })
     scaling.scaleOnCpuUtilization('CpuScaling', {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),

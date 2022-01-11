@@ -35,7 +35,7 @@ export class Stack{
     const app = new cdk.App();
 
     // create a shared ECR Registry
-    const registry = new Registry(app, `${this.repo}`, {
+    const registry = new Registry(app, `${this.repo}-${this.key}`, {
       org: this.org,
       env: this.env,
       key: this.key,
