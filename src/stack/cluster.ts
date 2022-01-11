@@ -102,14 +102,17 @@ export default class Cluster extends cdk.Stack {
     const redis = new elasticache.Cluster(this, `${this.id}-redis`, { vpc: vpc });
     const mq = new sqs.Queue(this, `${this.id}-sqs`);
 
-    new cdk.CfnOutput(this, 'DBSecretArn', { value: db?.secret?.secretArn || 'unknown' })
-
     this.vpc = vpc;
     this.cluster = cluster;
     this.bastion = bastion;
     this.redis = redis;
     this.db = db;
     this.mq = mq;
+
+    new cdk.CfnOutput(this, 'vpc', { value: this.vpc.vpcId, exportName: 'vpc' })
+    new cdk.CfnOutput(this, 'cluster', { value: this.cluster.clusterArn, exportName: 'cluster' })
+    new cdk.CfnOutput(this, 'db', { value: this.db?.clusterArn, exportName: 'db' })
+
 
   }
 }
