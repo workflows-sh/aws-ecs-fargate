@@ -107,8 +107,15 @@ export default class Service extends cdk.Stack {
       ]
     });
 
-    const db_secrets = sm.Secret.fromSecretAttributes(this, 'host', {
+    const db_secrets = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
       secretArn: this.db?.secret?.secretArn
+    });
+
+    const VAULT_KEY = `${this.env}_${this.key}_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
+    console.log(process.env[VAULT_KEY])
+
+    const vault_secrets = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-env-secrets`, {
+      secretArn: process.env[VAULT_KEY]
     });
 
     const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.repo}-${this.key}`, {

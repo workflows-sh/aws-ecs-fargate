@@ -15,6 +15,9 @@ commands:
         - DEV_AWS_ECS_FARGATE_STATE
         - STG_AWS_ECS_FARGATE_STATE
         - PRD_AWS_ECS_FARGATE_STATE
+        - DEV_AWS_ECS_FARGATE_VAULT_ARN
+        - STG_AWS_ECS_FARGATE_VAULT_ARN
+        - PRD_AWS_ECS_FARGATE_VAULT_ARN
   - name: deploy:0.2.0
     run: ./node_modules/.bin/ts-node /ops/src/deploy.ts
     description: "deploy to an environment"
@@ -90,8 +93,9 @@ pipelines:
         - DEBIAN_FRONTEND=noninteractive
         - ORG=kc-dot-io
         - REPO=sample-app
-        - REF=latest
+        - REF=main
         - AWS_REGION=us-west-1
+        - STACK_TYPE=aws-ecs-fargate
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
@@ -117,8 +121,8 @@ pipelines:
           - cd $REPO && ls -asl
           # - cd application && ls -asl
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
-          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app:$REF .
-          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app:$REF
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
 services:
   - name: sample-app:0.1.0
     description: preview of sample app

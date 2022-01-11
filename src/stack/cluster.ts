@@ -109,10 +109,9 @@ export default class Cluster extends cdk.Stack {
     this.db = db;
     this.mq = mq;
 
-    new cdk.CfnOutput(this, 'vpc', { value: this.vpc.vpcId, exportName: 'vpc' })
-    new cdk.CfnOutput(this, 'cluster', { value: this.cluster.clusterArn, exportName: 'cluster' })
-    new cdk.CfnOutput(this, 'db', { value: this.db?.clusterArn, exportName: 'db' })
-
+    new cdk.CfnOutput(this, `${this.id}VpcId`, { value: this.vpc.vpcId})
+    new cdk.CfnOutput(this, `${this.id}ClusterArn`, { value: this.cluster.clusterArn})
+    new cdk.CfnOutput(this, `${this.id}DbArn`, { value: this.db?.clusterArn})
 
   }
 }

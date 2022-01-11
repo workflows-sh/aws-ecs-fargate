@@ -25,8 +25,8 @@ async function init() {
   try {
 
     const secrets = {}
-    const KEY = `${STACK_ENV.toUpperCase()}_VAULT`
-    const vault = await pexec(`aws secretsmanager create-secret --name ${KEY} --description "The ${STACK_ENV} secret vault" --secret-string "${JSON.stringify(secrets)}"`) 
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const vault = await pexec(`aws secretsmanager create-secret --name ${KEY} --description "The ${STACK_ENV} secret vault" --secret-string "${JSON.stringify(secrets)}" --region "${process.env.AWS_REGION}"`) 
     sdk.setConfig(`${KEY}`, JSON.parse(vault.stdout).ARN)
     console.log(vault.stdout)
 
@@ -53,8 +53,7 @@ async function create() {
 
   try {
 
-    const KEY = `${STACK_ENV.toUpperCase()}_VAULT`
-
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const { confirmation } = await ux.prompt<{
       confirmation: boolean
     }>({
@@ -68,14 +67,14 @@ async function create() {
     }
 
     const vault_id = await sdk.getConfig(KEY)
-    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id}`)
+    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id} --region "${process.env.AWS_REGION}"`)
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
 
     console.log(`🔐 Setting ${OPTIONS.k} to ${OPTIONS.v} on the ${KEY}`)
     secrets[OPTIONS.k] = OPTIONS.v
  
-    const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}'`) 
+    const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}' --region "${process.env.AWS_REGION}"`) 
     console.log(update.stdout)
   } catch (e) {
     console.log('there was an error:', e)
@@ -100,9 +99,9 @@ async function list() {
 
   try {
 
-    const KEY = `${STACK_ENV.toUpperCase()}_VAULT`
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
-    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id}`)
+    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id} --region "${process.env.AWS_REGION}"`)
 
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
@@ -151,16 +150,16 @@ async function remove() {
       return console.log('Exiting...')
     }
 
-    const KEY = `${STACK_ENV.toUpperCase()}_VAULT`
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
-    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id}`)
+    const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id} --region "${process.env.AWS_REGION}"`)
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
 
     console.log(`🔐 deleting ${OPTIONS.k} from the ${KEY}`)
     delete secrets[OPTIONS.k]
  
-    const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}'`) 
+    const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}' --region "${process.env.AWS_REGION}"`) 
     console.log(update.stdout)
 
   } catch (e) {
@@ -187,7 +186,7 @@ async function destroy() {
 
   try {
 
-    const KEY = `${STACK_ENV.toUpperCase()}_VAULT`
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
 
     const { confirmation } = await ux.prompt<{
@@ -202,7 +201,7 @@ async function destroy() {
       return console.log('Exiting...')
     }
 
-    const vault = await pexec(`aws secretsmanager delete-secret --secret-id ${vault_id} --force-delete-without-recovery`)
+    const vault = await pexec(`aws secretsmanager delete-secret --secret-id ${vault_id} --force-delete-without-recovery --region "${process.env.AWS_REGION}"`)
     const data = JSON.parse(vault.stdout)
     console.log(data)
 
