@@ -107,16 +107,13 @@ export default class Service extends cdk.Stack {
       ]
     });
 
-    const db_secrets = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
-      secretArn: this.db?.secret?.secretArn
-    });
-
     const VAULT_KEY = `${this.env}_${this.key}_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
-    console.log(process.env[VAULT_KEY])
-
-    const vault_secrets = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-env-secrets`, {
+    const DB_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
+      secretArn: this.db?.secret?.secretArn
+    })
+    const ENV_VAULT = ecs.Secret.fromSecretsManager(sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-env-secrets`, {
       secretArn: process.env[VAULT_KEY]
-    });
+    }))
 
     const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.repo}-${this.key}`, {
       cluster: this.cluster,
@@ -128,15 +125,19 @@ export default class Service extends cdk.Stack {
         enableLogging: true,
         logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}`}),
         environment: {
-          DB_HOST: db_secrets.secretValueFromJson('host').toString(),
-          DB_PORT: db_secrets.secretValueFromJson('port').toString(),
-          DB_USER: db_secrets.secretValueFromJson('username').toString(),
-          DB_PASS: db_secrets.secretValueFromJson('password').toString(),
+          DB_HOST: DB_VAULT.secretValueFromJson('host').toString(),
+          DB_PORT: DB_VAULT.secretValueFromJson('port').toString(),
+          DB_USER: DB_VAULT.secretValueFromJson('username').toString(),
+          DB_PASS: DB_VAULT.secretValueFromJson('password').toString(),
           REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
           REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
           SQS_URL: this.mq?.queueUrl,
           SQS_NAME: this.mq?.queueName,
           CF_DOMAIN: cf.distributionDomainName
+        },
+        secrets: {
+          VAULT: ENV_VAULT // include the entire vault payload
+          // TEST: ENV_VAULT.secretValueFromJson('TEST') // assign specific envs from vault
         }
       }
     })
