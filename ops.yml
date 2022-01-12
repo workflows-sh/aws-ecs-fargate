@@ -1,56 +1,93 @@
 version: "1"
 commands:
   - name: setup:0.2.0
-    run: node /ops/src/setup.js
+    run: ./node_modules/.bin/ts-node /ops/src/setup.ts
     description: "setup an environment"
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
+      configs:
+        - DEV_AWS_ECS_FARGATE_STATE
+        - STG_AWS_ECS_FARGATE_STATE
+        - PRD_AWS_ECS_FARGATE_STATE
+        - DEV_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - STG_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - PRD_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - DEV_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
+        - STG_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
+        - PRD_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
   - name: deploy:0.2.0
-    run: node /ops/src/deploy.js
+    run: ./node_modules/.bin/ts-node /ops/src/deploy.ts
     description: "deploy to an environment"
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
+      configs:
+        - DEV_AWS_ECS_FARGATE_STATE
+        - STG_AWS_ECS_FARGATE_STATE
+        - PRD_AWS_ECS_FARGATE_STATE
   - name: destroy:0.1.0
-    run: node /ops/src/destroy.js
+    run: ./node_modules/.bin/ts-node /ops/src/destroy.ts
     description: "destroy an environment"
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
   - name: ssh:0.1.0
-    run: node /ops/src/ssh.js
+    run: ./node_modules/.bin/ts-node /ops/src/ssh.ts
     description: "connect to bastion with ssh"
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
   - name: tunnel:0.1.0
-    run: node /ops/src/tunnel.js
+    run: ./node_modules/.bin/ts-node /ops/src/tunnel.ts
     description: "connect to bastion with ssh"
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
-
+  - name: vault:0.1.0
+    run: ./node_modules/.bin/ts-node /ops/src/vault.ts
+    description: "manage secrets vault"
+    env:
+      static:
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+      secrets:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    help:
+      usage: ops run vault <sub-cmd> <--key> <--value>
+      arguments: 
+        init: 'init the environments vault'
+        create: 'set a key in the enviroment vault'
+        list: 'list keys in the environment vault'
+        remove: ' remove a specific key in the environment vault'
+        destroy: 'destroy the environment vault'
 pipelines:
   - name: sample-app-pipeline:0.2.0
     description: build a release for deployment on fargate

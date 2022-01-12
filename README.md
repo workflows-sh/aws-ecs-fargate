@@ -1,4 +1,4 @@
-# stacks
+# AWS-ECS-FARGATE
 
 # Introduction 
 
@@ -6,3 +6,5 @@
 
 # Documentation 
 
+## License 
+MIT

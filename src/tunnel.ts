@@ -3,7 +3,7 @@ import { exec, execSync } from 'child_process';
 
 async function run() {
 
-  const STACK_TYPE = process.env.STACK_TYPE || 'ECS-Fargate';
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 

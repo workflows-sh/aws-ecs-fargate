@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 
 async function run() {
 
-  const STACK_TYPE = process.env.STACK_TYPE || 'ECS-Fargate';
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
@@ -74,6 +74,11 @@ async function run() {
   })
   deploy.stdout.pipe(process.stdout)
   deploy.stderr.pipe(process.stderr)
+
+  sdk.log(`🧹 Cleaning up...`)
+  const cleanup = await exec('rm -Rf ./cdk.out')
+  cleanup.stdout.pipe(process.stdout)
+  cleanup.stderr.pipe(process.stderr)
 
   sdk.track([], {
     event_name: 'deployment',
