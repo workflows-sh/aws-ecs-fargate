@@ -12,6 +12,10 @@ import * as elasticache from './redis'
 
 import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
 
+import util from 'util';
+import { exec as oexec } from 'child_process';
+const pexec = util.promisify(oexec);
+
 interface StackProps {
   org: string
   env: string
@@ -87,13 +91,13 @@ export default class Service extends cdk.Stack {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html"
-    });
+    })
 
     // We can enable deployment from the local system using this
-    // const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
-      // sources: [s3Deploy.Source.asset("./sample-app/dist")],
-      // destinationBucket: bucket
-    // });
+    const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
+      sources: [s3Deploy.Source.asset("./sample-app/dist")],
+      destinationBucket: bucket
+    })
 
     // Cloudfront
     const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.repo}-${this.key}-cloudfront`, {
@@ -105,15 +109,34 @@ export default class Service extends cdk.Stack {
           behaviors: [{isDefaultBehavior: true}]
         },
       ]
-    });
+    })
 
-    const VAULT_KEY = `${this.env}_${this.key}_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
-    const DB_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
+    const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
+    const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
       secretArn: this.db?.secret?.secretArn
     })
-    const ENV_VAULT = ecs.Secret.fromSecretsManager(sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-env-secrets`, {
-      secretArn: process.env[VAULT_KEY]
-    }))
+
+    let service_secrets = {}
+
+    if(process.env[SERVICE_VAULT_KEY]) {
+      const service_vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${process.env[SERVICE_VAULT_KEY]} --region "${process.env.AWS_REGION}"`)
+      const service_data = JSON.parse(service_vault.stdout)
+      service_secrets = JSON.parse(service_data.SecretString)
+    } 
+
+    const environment = Object.assign({
+      DB_HOST: CLUSTER_VAULT.secretValueFromJson('host').toString(),
+      DB_PORT: CLUSTER_VAULT.secretValueFromJson('port').toString(),
+      DB_USER: CLUSTER_VAULT.secretValueFromJson('username').toString(),
+      REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
+      REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
+      SQS_URL: this.mq?.queueUrl,
+      SQS_NAME: this.mq?.queueName,
+      CDN_URL: cf.distributionDomainName
+    }, { ...service_secrets })
+
+    // get env vars that can be used to update container runtime task definition
+    const PORT = service_secrets['PORT'] ? parseInt(service_secrets['PORT']) : 3000
 
     const fargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `${this.repo}-${this.key}`, {
       cluster: this.cluster,
@@ -121,24 +144,10 @@ export default class Service extends cdk.Stack {
       serviceName: `${this.repo}`,
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(this.registry, this.tag),
-        containerPort: 3000,
+        containerPort: PORT,
         enableLogging: true,
         logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}`}),
-        environment: {
-          DB_HOST: DB_VAULT.secretValueFromJson('host').toString(),
-          DB_PORT: DB_VAULT.secretValueFromJson('port').toString(),
-          DB_USER: DB_VAULT.secretValueFromJson('username').toString(),
-          DB_PASS: DB_VAULT.secretValueFromJson('password').toString(),
-          REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
-          REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
-          SQS_URL: this.mq?.queueUrl,
-          SQS_NAME: this.mq?.queueName,
-          CF_DOMAIN: cf.distributionDomainName
-        },
-        secrets: {
-          VAULT: ENV_VAULT // include the entire vault payload
-          // TEST: ENV_VAULT.secretValueFromJson('TEST') // assign specific envs from vault
-        }
+        environment: environment
       }
     })
     fargateService.service.connections.allowToDefaultPort(this.db, 'MySQL access')
@@ -150,12 +159,10 @@ export default class Service extends cdk.Stack {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),
       scaleOutCooldown: cdk.Duration.seconds(60)
-    });
+    })
 
-
-
-    this.URL = fargateService.loadBalancer.loadBalancerDnsName; 
-    new cdk.CfnOutput(this, 'ServiceURL', { value: this.URL });
+    this.URL = fargateService.loadBalancer.loadBalancerDnsName
+    new cdk.CfnOutput(this, `${this.repo}LoadBalancer`, { value: this.URL });
 
   }
 }

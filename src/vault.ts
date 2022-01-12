@@ -25,7 +25,7 @@ async function init() {
   try {
 
     const secrets = {}
-    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault = await pexec(`aws secretsmanager create-secret --name ${KEY} --description "The ${STACK_ENV} secret vault" --secret-string "${JSON.stringify(secrets)}" --region "${process.env.AWS_REGION}"`) 
     sdk.setConfig(`${KEY}`, JSON.parse(vault.stdout).ARN)
     console.log(vault.stdout)
@@ -53,7 +53,7 @@ async function create() {
 
   try {
 
-    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const { confirmation } = await ux.prompt<{
       confirmation: boolean
     }>({
@@ -71,8 +71,8 @@ async function create() {
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
 
-    console.log(`🔐 Setting ${OPTIONS.k} to ${OPTIONS.v} on the ${KEY}`)
-    secrets[OPTIONS.k] = OPTIONS.v
+    console.log(`🔐 Setting ${OPTIONS.k} to ${OPTIONS.v} on the ${KEY} with type ${typeof OPTIONS.v}`)
+    secrets[OPTIONS.k] = OPTIONS.v.toString()
  
     const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}' --region "${process.env.AWS_REGION}"`) 
     console.log(update.stdout)
@@ -99,7 +99,7 @@ async function list() {
 
   try {
 
-    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
     const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id} --region "${process.env.AWS_REGION}"`)
 
@@ -150,7 +150,7 @@ async function remove() {
       return console.log('Exiting...')
     }
 
-    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
     const vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${vault_id} --region "${process.env.AWS_REGION}"`)
     const data = JSON.parse(vault.stdout); 
@@ -186,7 +186,7 @@ async function destroy() {
 
   try {
 
-    const KEY = `${STACK_ENV}_${STACK_TYPE}_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
+    const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const vault_id = await sdk.getConfig(KEY)
 
     const { confirmation } = await ux.prompt<{

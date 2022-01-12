@@ -79,9 +79,11 @@ async function run() {
       const json = await fs.readFileSync('./outputs.json', 'utf8')
       const outputs = JSON.parse(json)
 
-      const CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
-      sdk.setConfig(CONFIG_KEY, JSON.stringify(outputs))
-      
+      const STATE_KEY = `${STACK_ENV}-${STACK_TYPE}`
+
+      const STATE_CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
+      sdk.setConfig(STATE_CONFIG_KEY, JSON.stringify(outputs))
+
     } catch (e) {
       throw e
     }
