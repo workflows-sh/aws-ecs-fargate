@@ -89,14 +89,14 @@ commands:
         remove: ' remove a specific key in the environment vault'
         destroy: 'destroy the environment vault'
 pipelines:
-  - name: sample-app-pipeline:0.2.0
+  - name: react-pipeline:0.2.0
     description: build a release for deployment on fargate
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
-        - ORG=kc-dot-io
-        - REPO=sample-app
-        - REF=main
+        - ORG=DailyHiveOrganization
+        - REPO=dailyhive-react
+        - REF=master
         - AWS_REGION=us-west-1
         - STACK_TYPE=aws-ecs-fargate
       secrets:
@@ -113,8 +113,8 @@ pipelines:
           - git
           - unzip
           - python
-        bind:
-          - /Users/slajax/repos/cto.ai/workflows/sample-app:/ops/application
+        # bind:
+          # - /Users/campbell/Development/hackCapital/ops/sample-wordpress:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
@@ -123,9 +123,9 @@ pipelines:
           - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
           - cd $REPO && ls -asl
           # - cd application && ls -asl
-          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
-          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF .
-          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
 services:
   - name: sample-app:0.1.0
     description: preview of sample app
