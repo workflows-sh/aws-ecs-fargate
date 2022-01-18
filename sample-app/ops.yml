@@ -1,0 +1,60 @@
+pipelines:
+  - name: sample-app-pipeline:0.2.0
+    description: build a release for deployment on fargate
+    env:
+      static:
+        - DEBIAN_FRONTEND=noninteractive
+        - STACK_TYPE=aws-ecs-fargate
+        - ORG=schier-products
+        - REPO=sample-app
+        - REF=pipeline-test
+        - AWS_REGION=us-east-1
+      secrets:
+        - GITHUB_TOKEN
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    events:
+      - "github:schierproducts/sample-app:pull_request.merged" 
+      - "github:schierproducts/sample-app:create.tag" 
+    jobs:
+      - name: sample-app-build-job
+        description: example build step
+        packages:
+          - git
+          - unzip
+          - python
+        #bind:
+        #- /Users/slajax/repos/cto.ai/clients/schier/grease-monkey:/ops/application
+        steps:
+          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
+          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
+          - export PATH=~/bin:$PATH
+          - aws --version
+          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          - cd $REPO && ls -asl
+          #- cd application && ls -asl
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO
+          - docker build -f Dockerfile-php-development -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:$REF
+services:
+  - name: sample-app:0.1.0
+    description: preview of sample app
+    run: node sample-app/app.js
+    port: [ '8080:8080' ]
+    domain: ""
+    env:
+      static:
+        - PORT=8080
+        - DB_HOST=localhost
+        - DB_PORT=3600
+        - DB_USER=fake
+      secrets:
+        - SLACK_SIGNING_SECRET
+        - SLACK_BOT_TOKEN
+    events:
+     - "github:schierproducts/sample-app:pull_request.merged"
+    trigger:
+     - build
+     - publish
+     - start
