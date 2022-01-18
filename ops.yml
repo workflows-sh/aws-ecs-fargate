@@ -36,6 +36,16 @@ commands:
         - DEV_AWS_ECS_FARGATE_STATE
         - STG_AWS_ECS_FARGATE_STATE
         - PRD_AWS_ECS_FARGATE_STATE
+      configs:
+        - DEV_AWS_ECS_FARGATE_STATE
+        - STG_AWS_ECS_FARGATE_STATE
+        - PRD_AWS_ECS_FARGATE_STATE
+        - DEV_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - STG_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - PRD_AWS_ECS_FARGATE_CLUSTER_VAULT_ARN
+        - DEV_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
+        - STG_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
+        - PRD_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
   - name: destroy:0.1.0
     run: ./node_modules/.bin/ts-node /ops/src/destroy.ts
     description: "destroy an environment"
