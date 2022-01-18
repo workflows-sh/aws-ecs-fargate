@@ -13,7 +13,7 @@
     "url": "https://cto.ai",
     "organization": true
   },
-  "license": "Private",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^8.10.38",
     "ts-node": "^10.0.0",
