@@ -27,7 +27,7 @@ export default class Registry extends cdk.Stack {
     this.id = id
     this.org = props?.org ?? 'cto-ai'
     this.env = props?.env ?? 'dev'
-    this.key = props?.key ?? 'do-k8s'
+    this.key = props?.key ?? 'aws-ecs-fargate'
     this.repo = props?.repo ?? 'sample-app'
     this.tag = props?.tag ?? 'main'
     this.entropy = props?.entropy ?? '01012022'
