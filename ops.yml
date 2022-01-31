@@ -100,7 +100,7 @@ pipelines:
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
-        - ORG=kc-dot-io
+        - ORG=workflows-sh
         - REPO=sample-app
         - REF=main
         - AWS_REGION=us-west-1
@@ -132,6 +132,43 @@ pipelines:
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
+  - name: sample-rails-pipeline:0.2.0
+    description: build a release for deployment on fargate
+    env:
+      static:
+        - DEBIAN_FRONTEND=noninteractive
+        - ORG=workflows-sh
+        - REPO=sample-rails
+        - REF=main
+        - AWS_REGION=us-west-1
+        - STACK_TYPE=aws-ecs-fargate
+      secrets:
+        - GITHUB_TOKEN
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    events:
+      - "github:workflows-sh/sample-rails:pull_request.opened"
+    jobs:
+      - name: sample-rails-build-job
+        description: example build step
+        packages:
+          - git
+          - unzip
+          - python
+        bind:
+          - /Users/slajax/repos/cto.ai/workflows/sample-rails:/ops/application
+        steps:
+          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
+          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
+          - export PATH=~/bin:$PATH
+          - aws --version
+          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          - cd $REPO && ls -asl
+          # - cd application && ls -asl
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
 services:
   - name: sample-app:0.1.0
     description: preview of sample app
