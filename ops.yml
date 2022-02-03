@@ -104,13 +104,13 @@ pipelines:
         - AWS_REGION=us-west-1
         - ORG=DailyHiveOrganization
         - REPO=dailyhive-react
-        - REF=prod
+        - REF=prod #required for local builds
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
-    # events:
+    # events: #required for remote builds
     #   - "github:DailyHiveOrganization/dailyhive-react:pull_request.opened"
     jobs:
       - name: react-build-job
@@ -119,16 +119,16 @@ pipelines:
           - git
           - unzip
           - python
-        # bind:
+        # bind: # required for local builds
         #   - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-react:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
           - export PATH=~/bin:$PATH
           - aws --version
-          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-          # - cd $REPO && ls -asl
-          - cd application && ls -asl
+          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO #required for remote builds
+          # - cd $REPO && ls -asl #required for remote builds
+          - cd application && ls -asl #required for local builds
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
@@ -141,13 +141,13 @@ pipelines:
         - AWS_REGION=us-west-1
         - ORG=DailyHiveOrganization
         - REPO=dailyhive-express
-        - REF=prod
+        - REF=prod #required for local builds
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
-    # events:
+    # events: #required for remote builds
     #   - "github:DailyHiveOrganization/dailyhive-express:pull_request.opened"
     jobs:
       - name: express-build-job
@@ -156,16 +156,16 @@ pipelines:
           - git
           - unzip
           - python
-        # bind:
+        # bind: #required for local builds
         #   - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-express:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
           - export PATH=~/bin:$PATH
           - aws --version
-          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-          # - cd $REPO && ls -asl
-          - cd application && ls -asl
+          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO #required for remote builds
+          # - cd $REPO && ls -asl #required for remote builds
+          - cd application && ls -asl #required for local builds
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
