@@ -100,11 +100,11 @@ pipelines:
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
         - ORG=DailyHiveOrganization
         - REPO=dailyhive-react
         - REF=prod
-        - AWS_REGION=us-west-1
-        - STACK_TYPE=aws-ecs-fargate
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
@@ -137,11 +137,11 @@ pipelines:
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
         - ORG=DailyHiveOrganization
         - REPO=dailyhive-express
         - REF=prod
-        - AWS_REGION=us-west-1
-        - STACK_TYPE=aws-ecs-fargate
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
