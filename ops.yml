@@ -132,16 +132,16 @@ pipelines:
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
-  - name: sample-rails-pipeline:0.2.0
+  - name: sample-rails-pipeline:0.4.0
     description: build a release for deployment on fargate
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
         - ORG=workflows-sh
         - REPO=sample-rails
-        - REF=main
         - AWS_REGION=us-west-1
         - STACK_TYPE=aws-ecs-fargate
+        - REF=local
       secrets:
         - GITHUB_TOKEN
         - AWS_ACCESS_KEY_ID
@@ -157,16 +157,16 @@ pipelines:
           - unzip
           - python
         bind:
-          - /Users/slajax/repos/cto.ai/workflows/sample-rails:/ops/application
+          - /Users/campbell/Development/hackCapital/ops/sample-rails:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
           - export PATH=~/bin:$PATH
           - aws --version
-          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-          - cd $REPO && ls -asl
-          # - cd application && ls -asl
-          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
+          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          # - cd $REPO && ls -asl
+          - cd application && ls -asl
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
 services:
