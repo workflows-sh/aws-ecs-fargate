@@ -43,18 +43,7 @@ async function run() {
   }
 
   sdk.log(`📦 Setting up the stack`)
-  /*const synth =*/ await exec(`npm run cdk synth`, {
-    env: { 
-      ...process.env, 
-      STACK_TYPE: STACK_TYPE, 
-      STACK_REPO: STACK_REPO,
-      STACK_TAG: 'main'
-    }
-  })
-  // synth.stdout.pipe(process.stdout)
-  // synth.stderr.pipe(process.stdout)
-
-  const deploy = await exec(`./node_mdoules/.bin/cdk destroy -f -e true ${STACKS[STACK_ENV].join(' ')}`, {
+  const deploy = await exec(`./node_modules/.bin/cdk destroy -f -e true ${STACKS[STACK_ENV].reverse().join(' ')}`, {
     env: { 
       ...process.env, 
       STACK_TYPE: STACK_TYPE, 
