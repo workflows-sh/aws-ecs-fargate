@@ -95,7 +95,7 @@ commands:
         remove: ' remove a specific key in the environment vault'
         destroy: 'destroy the environment vault'
 pipelines:
-  - name: react-pipeline:0.2.0
+  - name: react-pipeline:0.1.0
     description: build a release for deployment on fargate
     env:
       static:
@@ -110,8 +110,8 @@ pipelines:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
-    events:
-      - "github:workflows-sh/sample-react:pull_request.opened"
+    # events:
+    #   - "github:DailyHiveOrganization/dailyhive-react:pull_request.opened"
     jobs:
       - name: react-build-job
         description: example build step
@@ -119,8 +119,45 @@ pipelines:
           - git
           - unzip
           - python
-        bind:
-          - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-react:/ops/application
+        # bind:
+        #   - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-react:/ops/application
+        steps:
+          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
+          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
+          - export PATH=~/bin:$PATH
+          - aws --version
+          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          # - cd $REPO && ls -asl
+          - cd application && ls -asl
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
+  - name: express-pipeline:0.1.0
+    description: build a release for deployment on fargate
+    env:
+      static:
+        - DEBIAN_FRONTEND=noninteractive
+        - ORG=DailyHiveOrganization
+        - REPO=dailyhive-express
+        - REF=prod
+        - AWS_REGION=us-west-1
+        - STACK_TYPE=aws-ecs-fargate
+      secrets:
+        - GITHUB_TOKEN
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    # events:
+    #   - "github:DailyHiveOrganization/dailyhive-express:pull_request.opened"
+    jobs:
+      - name: express-build-job
+        description: example build step
+        packages:
+          - git
+          - unzip
+          - python
+        # bind:
+        #   - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-express:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
