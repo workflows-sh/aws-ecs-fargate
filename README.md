@@ -10,9 +10,9 @@ A PaaS workflow with GitOps / ChatOps features that supports ECS, Fargate, Auror
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
 - [Introduction](#introduction)
-- [Installation](#installation)
+  - [Installation](#installation)
     - [Build and Run your Sample-App](#build-and-run-your-sample-app)
-- [Documentation](#documentation)
+  - [Documentation](#documentation)
     - [Run and setup your Infrastructure](#run-and-setup-your-infrastructure)
     - [Build and publish your Pipelines and Services.](#build-and-publish-your-pipelines-and-services)
 
@@ -28,8 +28,11 @@ A PaaS workflow with GitOps / ChatOps features that supports ECS, Fargate, Auror
 
 The workflow.sh repo contains the AWS ECS and Fargate stack that acts as your infrastructure for you to be able to deploy, manage and run your container services and resources and build your Pipelines and Services on CTO.ai
 
+---
 
-# Installation 
+## Installation 
+
+---
 
 ### Build and Run your Sample-App
 
@@ -59,7 +62,7 @@ Your `Sample-App` can be any application of any programming language you want to
 
 ---
 
-# Documentation
+## Documentation
 
 ### Run and setup your Infrastructure
 
