@@ -32,8 +32,6 @@ The workflow.sh repo contains the AWS ECS and Fargate stack that acts as your in
 
 ## Installation 
 
----
-
 ### Build and Run your Sample-App
 
 - Create and log in to your account on CTO.ai
