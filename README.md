@@ -2,6 +2,7 @@
 
 ## Introduction 
 
+A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.ai
 
 ## Pre-requisites
 
@@ -11,7 +12,7 @@
 
 ## Documentation 
 
-[![diagram](https://cdn.loom.com/sessions/thumbnails/b4b45f1030fb429888e2059a34ed56f0-full-1644219832271.jpg)](https://cdn.loom.com/sessions/thumbnails/b4b45f1030fb429888e2059a34ed56f0-full-1644219832271.jpg)
+[![diagram](docs/img/diagram.png)](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0)
 
 - [0:00](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Intro 
 - [0:37](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Solution Overview 
