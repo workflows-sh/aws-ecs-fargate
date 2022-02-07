@@ -120,16 +120,16 @@ pipelines:
           - git
           - unzip
           - python
-        bind:
-          - /Users/slajax/repos/cto.ai/workflows/sample-app:/ops/application
+        # bind: # useful for running workflows locally with source code
+          # - /path/on/host/to/source:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
           - export PATH=~/bin:$PATH
           - aws --version
-            #- git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-            #- cd $REPO && ls -asl
-          - cd application && ls -asl
+          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
+          - cd $REPO && ls -asl
+          # - cd application && ls -asl
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
