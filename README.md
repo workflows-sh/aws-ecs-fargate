@@ -8,7 +8,7 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 
 - Docker, Node (NVM) 12+ & npm installed
 - Sign up for CTO.ai, setup CTO.ai team
-- Install CLI, ,Connect Github & Slack
+- Install Ops CLI, Connect Github & Slack
 
 ## Documentation 
 
