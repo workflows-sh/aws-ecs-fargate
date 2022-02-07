@@ -5,7 +5,39 @@ import { exec as oexec } from 'child_process';
 const pexec = util.promisify(oexec);
 
 const ARGS = process.argv.slice(3);
-const OPTIONS = require('simple-argv')
+
+function secretValuePrompt () {
+  return ux.prompt<{
+    SECRET_VALUE: string
+  }>({
+    type: 'input',
+    name: 'SECRET_VALUE',
+    message: 'What is the value for the secret?',
+    allowEmpty: false
+  })
+}
+
+function secretKeyPrompt () {
+  return ux.prompt<{
+    SECRET_KEY: string
+  }>({
+    type: 'input',
+    name: 'SECRET_KEY',
+    message: 'What is the key for the secret?',
+    allowEmpty: false
+  })
+}
+
+function stackEnvPrompt () {
+  return ux.prompt<{
+    STACK_ENV: string
+  }>({
+    type: 'input',
+    name: 'STACK_ENV',
+    default: 'dev',
+    message: 'What is the name of the environment?'
+  })
+}
 
 async function init() {
 
@@ -13,14 +45,7 @@ async function init() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
 
   try {
 
@@ -42,14 +67,9 @@ async function create() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { SECRET_KEY } = await secretKeyPrompt()
+  const { SECRET_VALUE } = await secretValuePrompt()
 
   try {
 
@@ -59,7 +79,7 @@ async function create() {
     }>({
       type: 'confirm',
       name: 'confirmation',
-      message: `Are you sure you want to set ${OPTIONS.k} to ${OPTIONS.v} in the ${KEY}?`
+      message: `Are you sure you want to set ${SECRET_KEY} to ${SECRET_VALUE} in the ${KEY}?`
     })
 
     if(!confirmation) {
@@ -71,8 +91,8 @@ async function create() {
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
 
-    console.log(`🔐 Setting ${OPTIONS.k} to ${OPTIONS.v} on the ${KEY} with type ${typeof OPTIONS.v}`)
-    secrets[OPTIONS.k] = OPTIONS.v.toString()
+    console.log(`🔐 Setting ${SECRET_KEY} to ${SECRET_VALUE} on the ${SECRET_KEY} with type ${typeof SECRET_VALUE}`)
+    secrets[SECRET_KEY] = SECRET_VALUE.toString()
  
     const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}' --region "${process.env.AWS_REGION}"`) 
     console.log(update.stdout)
@@ -88,14 +108,7 @@ async function list() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
 
   try {
 
@@ -127,14 +140,8 @@ async function remove() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { SECRET_KEY } = await secretKeyPrompt()
 
   try {
 
@@ -143,7 +150,7 @@ async function remove() {
     }>({
       type: 'confirm',
       name: 'confirmation',
-      message: `Are you sure you want to remove ${OPTIONS.k} from the vault?`
+      message: `Are you sure you want to remove ${SECRET_KEY} from the vault?`
     })
 
     if(!confirmation) {
@@ -156,8 +163,8 @@ async function remove() {
     const data = JSON.parse(vault.stdout); 
     const secrets = JSON.parse(data.SecretString)
 
-    console.log(`🔐 deleting ${OPTIONS.k} from the ${KEY}`)
-    delete secrets[OPTIONS.k]
+    console.log(`🔐 deleting ${SECRET_KEY} from the ${KEY}`)
+    delete secrets[SECRET_KEY]
  
     const update = await pexec(`aws secretsmanager update-secret --secret-id ${vault_id} --description "The ${STACK_ENV} secret vault" --secret-string '${JSON.stringify(secrets)}' --region "${process.env.AWS_REGION}"`) 
     console.log(update.stdout)
@@ -175,14 +182,7 @@ async function destroy() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
 
   try {
 
