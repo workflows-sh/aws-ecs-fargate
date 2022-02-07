@@ -10,7 +10,7 @@ async function run() {
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
   const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
 
-  await ux.print(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
+  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
@@ -94,6 +94,7 @@ async function run() {
       })
 
     } catch (e) {
+      console.log('There was an error updating workflow state', e)
       sdk.track([], {
         event_name: 'deployment',
         event_action: 'failed',
@@ -103,12 +104,12 @@ async function run() {
         commit: STACK_TAG,
         image: `${STACK_REPO}:${STACK_TAG}`
       })
-
-      throw e
+      process.exit(1)
     }
 
   })
   .catch((err) => {
+    console.log('There was an error deploying the infrastructure.')
     sdk.track([], {
       event_name: 'deployment',
       event_action: 'failed',
@@ -118,8 +119,6 @@ async function run() {
       commit: STACK_TAG,
       image: `${STACK_REPO}:${STACK_TAG}`
     })
-
-    console.log(err)
     process.exit(1)
   })
   
