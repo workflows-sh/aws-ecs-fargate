@@ -100,8 +100,8 @@ pipelines:
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
-        - ORG=kc-dot-io
-        - REPO=sample-app
+        - ORG=workflows-sh
+        - REPO=sample-react
         - REF=main
         - AWS_REGION=us-west-1
         - STACK_TYPE=aws-ecs-fargate
@@ -111,7 +111,8 @@ pipelines:
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
     events:
-      - "github:workflows-sh/sample-react:pull_request.opened"
+      - "github:workflows-sh/sample-react:pull_request.merged"
+      - "github:workflows-sh/sample-react:create.tag"
     jobs:
       - name: sample-app-build-job
         description: example build step
@@ -119,8 +120,8 @@ pipelines:
           - git
           - unzip
           - python
-        bind:
-          - /Users/slajax/repos/cto.ai/workflows/sample-app:/ops/application
+        # bind: # useful for running workflows locally with source code
+          # - /path/on/host/to/source:/ops/application
         steps:
           - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
           - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws

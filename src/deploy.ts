@@ -10,7 +10,7 @@ async function run() {
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
   const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
 
-  sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
+  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
@@ -60,8 +60,7 @@ async function run() {
     return console.log('Please try again with environment set to <dev|stg|prd|all>')
   }
 
-  console.log('\n')
-  ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
+  await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
   await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
@@ -81,8 +80,6 @@ async function run() {
       const json = await fs.readFileSync('./outputs.json', 'utf8')
       const outputs = JSON.parse(json)
 
-      const STATE_KEY = `${STACK_ENV}-${STACK_TYPE}`
-
       const STATE_CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
       sdk.setConfig(STATE_CONFIG_KEY, JSON.stringify(outputs))
 
@@ -93,16 +90,35 @@ async function run() {
         repo: STACK_REPO,
         branch: STACK_TAG,
         commit: STACK_TAG,
-        image: STACK_TAG
+        image: `${STACK_REPO}:${STACK_TAG}`
       })
 
     } catch (e) {
-      throw e
+      console.log('There was an error updating workflow state', e)
+      sdk.track([], {
+        event_name: 'deployment',
+        event_action: 'failed',
+        environment: STACK_ENV,
+        repo: STACK_REPO,
+        branch: STACK_TAG,
+        commit: STACK_TAG,
+        image: `${STACK_REPO}:${STACK_TAG}`
+      })
+      process.exit(1)
     }
 
   })
   .catch((err) => {
-    console.log(err)
+    console.log('There was an error deploying the infrastructure.')
+    sdk.track([], {
+      event_name: 'deployment',
+      event_action: 'failed',
+      environment: STACK_ENV,
+      repo: STACK_REPO,
+      branch: STACK_TAG,
+      commit: STACK_TAG,
+      image: `${STACK_REPO}:${STACK_TAG}`
+    })
     process.exit(1)
   })
   
