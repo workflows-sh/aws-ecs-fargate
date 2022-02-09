@@ -66,6 +66,32 @@ This is a detailed guide on setting up your Platform for the AWS-ECS-FARGATE Wor
 ![Screenshot 2022-02-09 at 12 36 48](https://user-images.githubusercontent.com/24816990/153192419-de8b0f67-3d3a-45c7-81c1-6332d9c947a8.png)
 
 
+4. Install The Ops CLI. Before you install the Ops CLI, you'll need to install [Docker](https://docs.docker.com/get-docker/) and the latest version of [Node Version Manager](https://github.com/nvm-sh/nvm)
+
+- Open the terminal and install The Ops CLI using this command:
+
+```
+npm install -g @cto.ai/ops
+```
+
+- Once installed, you must sign in to your account. Use the command:
+
+```
+ops account:signin
+```
+
+After signing in you're all set to start making and running Ops.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
