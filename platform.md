@@ -80,22 +80,34 @@ npm install -g @cto.ai/ops
 ops account:signin
 ```
 
-After signing in you're all set to start making and running Ops.
+**After signing in you're all set to start making and running Ops.**
+
+5. Back in your CTO.ai dashboard, create your secret keys by selecting **Settings** and **Secrets**
+
+![Screenshot 2022-02-09 at 13 16 24](https://user-images.githubusercontent.com/24816990/153199366-0550c6fb-d323-439d-bd5e-d99c055b18c7.png)
+
+Secrets keys are encrypted environment variables that CTO.ai utilizes within your workflow to build and run your application and deployments.
 
 
+**You will Create four secret keys:**
+
+- AWS_ACCESS_KEY_ID 
+- AWS_SECRET_ACCESS_KEY 
+- AWS_ACCOUNT_NUMBER 
+- GITHUB_TOKEN
+
+- To create your AWS SECRET KEY AND ACCESS KEY. Log into your AWS Account, select the Identity and Access Management (IAM) dashboard, create a new user, copy the **Access Key ID** and **Secret access key** and paste it in your secret dashboard on CTO.ai.
+
+![Screenshot 2022-02-09 at 13 20 03](https://user-images.githubusercontent.com/24816990/153200076-39dca835-be19-42d5-8d73-e58baddfeeae.png)
+
+- Your AWS_ACCOUNT_NUMBER can be gotten from your User ID on the top right corner in your AWS Console. 
 
 
+- Generate your GITHUB_TOKEN from Github by going to **Settings** → **Developer settings** → **Personal access tokens** → **Generate new token** on your Github profile.
+
+![Screenshot 2022-02-09 at 13 25 50](https://user-images.githubusercontent.com/24816990/153200773-ed6683f3-0e8c-4dbb-a96a-aba18fcb6c79.png)
 
 
+- Back in your CTO.ai **Secrets** dashboard attach your secrets keys and values. 
 
-
-
-
-
-
-
-
-
-
-
-
+<img width="1244" alt="7" src="https://user-images.githubusercontent.com/24816990/152702777-d7304962-74a9-41ef-8c41-6f8e5a01eb5f.png">
