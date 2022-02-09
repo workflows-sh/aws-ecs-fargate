@@ -1,4 +1,6 @@
-## Platform Setup for AWS ECS Fargate 
+## Platform Account Setup for AWS ECS Fargate 
+
+A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.ai
 
 
 ### Table of Contents
