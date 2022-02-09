@@ -2,42 +2,10 @@ import fs from 'fs'
 import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
 import { exec as oexec } from 'child_process';
+import { secretKeyPrompt, secretValuePrompt, stackEnvPrompt } from "./prompts";
 const pexec = util.promisify(oexec);
 
 const ARGS = process.argv.slice(3);
-
-function secretValuePrompt () {
-  return ux.prompt<{
-    SECRET_VALUE: string
-  }>({
-    type: 'input',
-    name: 'SECRET_VALUE',
-    message: 'What is the value for the secret?',
-    allowEmpty: false
-  })
-}
-
-function secretKeyPrompt () {
-  return ux.prompt<{
-    SECRET_KEY: string
-  }>({
-    type: 'input',
-    name: 'SECRET_KEY',
-    message: 'What is the key for the secret?',
-    allowEmpty: false
-  })
-}
-
-function stackEnvPrompt () {
-  return ux.prompt<{
-    STACK_ENV: string
-  }>({
-    type: 'input',
-    name: 'STACK_ENV',
-    default: 'dev',
-    message: 'What is the name of the environment?'
-  })
-}
 
 async function init() {
 
