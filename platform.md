@@ -50,7 +50,26 @@ This is a detailed guide on setting up your Platform for the AWS-ECS-FARGATE Wor
 ![Screenshot 2022-02-09 at 12 24 48](https://user-images.githubusercontent.com/24816990/153190810-c65bb157-369f-46e3-8883-6d6d362bba18.png)
 
 
-- Connect your GitHub to add your repository to your team
+- Connect your GitHub to add your repository to your team. Click on **Let's Connect GitHub**
 
 ![Screenshot 2022-02-09 at 12 26 50](https://user-images.githubusercontent.com/24816990/153191100-b096ba4b-83e0-41b9-bb14-8a40c00c489c.png)
+
+
+- Install and authorize CTO.ai
+
+
+![Screenshot 2022-02-09 at 12 34 01](https://user-images.githubusercontent.com/24816990/153192060-238ac84f-d441-46b3-85e6-5a1b8c79fcba.png)
+
+
+- You will beb redirected to your workflow and you will see your GitHub was connected successfully. Select **Continue to learn about Workflows** to know how to setup your **Commands**, **Pipelines** and **Services**
+
+![Screenshot 2022-02-09 at 12 36 48](https://user-images.githubusercontent.com/24816990/153192419-de8b0f67-3d3a-45c7-81c1-6332d9c947a8.png)
+
+
+
+
+
+
+
+
 
