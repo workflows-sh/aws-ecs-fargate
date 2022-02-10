@@ -1,5 +1,6 @@
-import { ux, sdk } from '@cto.ai/sdk';
+import { sdk } from '@cto.ai/sdk';
 import { exec } from 'child_process';
+import { stackEnvPrompt, stackRepoPrompt } from "./prompts";
 
 async function run() {
 
@@ -7,23 +8,8 @@ async function run() {
 
   sdk.log(`⚠️  Destroying ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
-
-  const { STACK_REPO } = await ux.prompt<{
-    STACK_REPO: string
-  }>({
-      type: 'input',
-      name: 'STACK_REPO',
-      default: 'sample-app',
-      message: 'What is the name of the application repo?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { STACK_REPO } = await stackRepoPrompt()
 
   const STACKS:any = {
     'dev': [`${STACK_REPO}`, STACK_ENV, `${STACK_ENV}-${STACK_REPO}`],

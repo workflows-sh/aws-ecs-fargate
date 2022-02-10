@@ -1,5 +1,6 @@
 import { ux, sdk } from '@cto.ai/sdk';
 import { exec, execSync } from 'child_process';
+import { stackEnvPrompt } from "./prompts";
 
 async function run() {
 
@@ -7,14 +8,7 @@ async function run() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What environment do you want to tunnel to?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
 
   const bastion = execSync(
     `aws ec2 describe-instances --region=us-east-1 --filter "Name=tag:Name,Values=${STACK_ENV}-bastion" --query "Reservations[].Instances[?State.Name == 'running'].InstanceId[]" --output text`, 

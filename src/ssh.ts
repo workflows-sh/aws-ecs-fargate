@@ -1,5 +1,6 @@
-import { ux, sdk } from '@cto.ai/sdk';
+import { sdk } from '@cto.ai/sdk';
 import { exec, execSync } from 'child_process';
+import { stackEnvPrompt } from "./prompts";
 
 async function run() {
 
@@ -7,14 +8,7 @@ async function run() {
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What environment do you want to tunnel to?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
 
   sdk.log(`🚇 Tunneling to ${STACK_ENV}`)
 

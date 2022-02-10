@@ -2,6 +2,7 @@ import fs from 'fs'
 import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
 import { exec as oexec } from 'child_process';
+import { stackEnvPrompt, stackRepoPrompt, stackTagPrompt } from "./prompts";
 const pexec = util.promisify(oexec);
 
 async function run() {
@@ -11,32 +12,9 @@ async function run() {
 
   sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
-    })
-
-  const { STACK_REPO } = await ux.prompt<{
-    STACK_REPO: string
-  }>({
-      type: 'input',
-      name: 'STACK_REPO',
-      default: 'sample-app',
-      message: 'What is the name of the application repo?'
-    })
-
-  const { STACK_TAG } = await ux.prompt<{
-    STACK_TAG: string
-  }>({
-      type: 'input',
-      name: 'STACK_TAG',
-      default: 'main',
-      message: 'What is the name of the tag or branch?'
-    })
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { STACK_REPO } = await stackRepoPrompt()
+  const { STACK_TAG } = await stackTagPrompt()
 
   const STACKS:any = {
     'dev': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
