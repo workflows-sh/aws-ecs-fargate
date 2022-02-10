@@ -18,7 +18,7 @@ export function stackRepoPrompt () {
   }>({
     type: 'list',
     name: 'STACK_REPO',
-    choices: ['dailyhive-react', 'dailyhive-express', 'dailyhive-wordpress'],
+    choices: ['dailyhive-react', 'dailyhive-express', 'wordpress-plugins'],
     default: 'dailyhive-react',
     message: 'What is the name of the application repo?'
   })
