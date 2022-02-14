@@ -25,7 +25,7 @@ export default class Registry extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: StackProps) {
     super(scope, id)
     this.id = id
-    this.org = props?.org ?? 'cto-ai'
+    this.org = props?.org ?? 'schier'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
     this.repo = props?.repo ?? 'sample-app'
