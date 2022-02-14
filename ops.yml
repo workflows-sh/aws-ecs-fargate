@@ -169,3 +169,40 @@ pipelines:
           - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
           - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
+  - name: wordpress-pipeline:0.1.0
+    description: build a release for deployment on fargate
+    env:
+      static:
+        - DEBIAN_FRONTEND=noninteractive
+        - STACK_TYPE=aws-ecs-fargate
+        - AWS_REGION=us-west-1
+        - ORG=DailyHiveOrganization
+        - REPO=wordpress-plugins
+        - REF=prod #required for local builds
+      secrets:
+        - GITHUB_TOKEN
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - AWS_ACCOUNT_NUMBER
+    # events: #required for remote builds
+    #   - "github:DailyHiveOrganization/wordpress-plugins:pull_request.opened"
+    jobs:
+      - name: wordpress-build-job
+        description: example build step
+        packages:
+          - git
+          - unzip
+          - python
+        # bind: #required for local builds
+        #   - /Users/campbell/Development/hackCapital/ops/client/dailyhive/dailyhive-wordpress:/ops/application
+        steps:
+          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
+          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
+          - export PATH=~/bin:$PATH
+          - aws --version
+          # - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO #required for remote builds
+          # - cd $REPO && ls -asl #required for remote builds
+          - cd application && ls -asl #required for local builds
+          - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE
+          - docker build -f Dockerfile -t $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF .
+          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO-$STACK_TYPE:$REF
