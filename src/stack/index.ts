@@ -23,7 +23,7 @@ export class Stack{
   public readonly entropy: string
 
   constructor(props?: StackProps) {
-    this.org = props?.org ?? 'DailyHiveOrganization'
+    this.org = props?.org ?? 'cto-ai'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
     this.repo = props?.repo ?? 'sample-app'

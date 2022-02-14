@@ -130,8 +130,8 @@ export default class Service extends cdk.Stack {
       DB_USER: CLUSTER_VAULT.secretValueFromJson('username').toString(),
       REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
       REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
-      SQS_URL: this.mq?.queueUrl,
-      SQS_NAME: this.mq?.queueName,
+      MQ_URL: this.mq?.queueUrl,
+      MQ_NAME: this.mq?.queueName,
       CDN_URL: cf.distributionDomainName
     }, { ...service_secrets })
 

@@ -31,7 +31,7 @@
     "@aws-cdk/aws-s3-deployment": "1.111.0",
     "@aws-cdk/core": "1.111.0",
     "@cto.ai/sdk": "^2.4.3",
-    "aws-cdk": "1.111.0",
+    "aws-cdk": "^2.10.0",
     "commonjs": "^0.0.1",
     "express": "^4.17.1",
     "source-map-support": "^0.5.19"
