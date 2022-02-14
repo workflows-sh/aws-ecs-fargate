@@ -26,7 +26,6 @@ ADD --chown=ops:9999 package.json .
 RUN npm install --loglevel=error
 
 ADD --chown=ops:9999 . .
-RUN npm run build
 
 RUN apt install -y procps lsof telnet
 EXPOSE 3306
