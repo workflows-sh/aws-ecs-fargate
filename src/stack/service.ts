@@ -29,7 +29,7 @@ interface StackProps {
   redis: any | undefined // todo @kc - fix this
   db: rds.ServerlessCluster | undefined
   mq: sqs.Queue | undefined
- }
+}
 
 export default class Service extends cdk.Stack {
 
@@ -53,19 +53,19 @@ export default class Service extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: StackProps) {
     super(scope, id)
 
-    if(!props?.cluster) {
+    if (!props?.cluster) {
       throw new Error('You must provide a Cluster for Service')
     }
-    if(!props?.registry) {
+    if (!props?.registry) {
       throw new Error('You must provide a Registry for Service')
     }
-    if(!props?.db) {
+    if (!props?.db) {
       throw new Error('You must provide a db for Service')
     }
-    if(!props?.redis) {
+    if (!props?.redis) {
       throw new Error('You must provide a redis for Service')
     }
-    if(!props?.mq) {
+    if (!props?.mq) {
       throw new Error('You must provide a mq for Service')
     }
 
@@ -106,23 +106,23 @@ export default class Service extends cdk.Stack {
           s3OriginSource: {
             s3BucketSource: bucket
           },
-          behaviors: [{isDefaultBehavior: true}]
+          behaviors: [{ isDefaultBehavior: true }]
         },
       ]
     })
 
-    const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
+    const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g, '_').toUpperCase()
     const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
       secretArn: this.db?.secret?.secretArn
     })
 
     let service_secrets = {}
 
-    if(process.env[SERVICE_VAULT_KEY]) {
+    if (process.env[SERVICE_VAULT_KEY]) {
       const service_vault = await pexec(`aws secretsmanager get-secret-value --secret-id ${process.env[SERVICE_VAULT_KEY]} --region "${process.env.AWS_REGION}"`)
       const service_data = JSON.parse(service_vault.stdout)
       service_secrets = JSON.parse(service_data.SecretString)
-    } 
+    }
 
     const environment = Object.assign({
       DB_HOST: CLUSTER_VAULT.secretValueFromJson('host').toString(),
@@ -146,7 +146,7 @@ export default class Service extends cdk.Stack {
         image: ecs.ContainerImage.fromEcrRepository(this.registry, this.tag),
         containerPort: PORT,
         enableLogging: true,
-        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}`}),
+        logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}` }),
         environment: environment
       }
     })
@@ -154,12 +154,22 @@ export default class Service extends cdk.Stack {
     fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10')
 
     // Setup AutoScaling policy
-    const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 2 })
+    const scaling = fargateService.service.autoScaleTaskCount({
+      minCapacity: 2,
+      maxCapacity: 5,
+    });
+
     scaling.scaleOnCpuUtilization('CpuScaling', {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),
       scaleOutCooldown: cdk.Duration.seconds(60)
-    })
+    });
+
+    scaling.scaleOnMemoryUtilization('MemoryScaling', {
+      targetUtilizationPercent: 50,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60)
+    });
 
     this.URL = fargateService.loadBalancer.loadBalancerDnsName
     new cdk.CfnOutput(this, `${this.repo}LoadBalancer`, { value: this.URL });
