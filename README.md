@@ -1,4 +1,5 @@
 # AWS-ECS-FARGATE
+![AWS Fargate_readme](https://user-images.githubusercontent.com/74427376/155803801-4f8bb79a-7282-4c73-bc8f-0852c1829a01.png)
 
 A PaaS workflow with GitOps / ChatOps features that supports ECS, Fargate, Aurora, SQS, Redis, Autoscaling via CDK
 
