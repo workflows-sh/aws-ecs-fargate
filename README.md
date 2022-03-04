@@ -93,14 +93,8 @@ The DigitalOcean Kubernetes workflow is updated
 - [install Ops CLI]()
 - [Create AWS Secret and Access keys]()
 - [Create GitHub Token]()
-- [Attach keys on CTO.ai ecrets dashboard]()
+- [Attach keys on CTO.ai secrets dashboard]()
 
-
-
-
-- [Creating your API keys and Spaces Access and Secret keys on DigitalOcean]()
-- [Creating your API token on Terraform Cloud]()
-- [Add and update your tokens on CTO.ai secrets dashboard]()
 
 ## Usage 
 
