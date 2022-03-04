@@ -62,6 +62,8 @@ This repo includes a complete Digital Ocean infrastructure complete with Kuberne
   - [Latest Version](#latest-version)
   - [Getting Started](#getting-started)
   - [Usage](#usage)
+    - [Build and Publish workflow on Ops CLI](#build-and-publish-workflow-on-ops-cli)
+    - [Build and Publish workflow on Slack](#build-and-publish-workflow-on-slack)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
   - [Limitations](#limitations)
@@ -98,13 +100,17 @@ The DigitalOcean Kubernetes workflow is updated
 
 ## Usage 
 
+### Build and Publish workflow on Ops CLI
 
 - [Build and Run Pipelines]()
 - [Setup and Run Infrastructure]()
 - [Publish Pipelines]()
-- [Publish Pipelines]()
-- [ Build and Publish Ser vices]()
+- [ Build and Publish Services]()
 
+### Build and Publish workflow on Slack 
+
+- [Build and Run Pipelines]()
+- [Build and Pubish Services]()
 
 ## Getting help 
 
