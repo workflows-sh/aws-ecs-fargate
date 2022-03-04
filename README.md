@@ -92,6 +92,8 @@ The DigitalOcean Kubernetes workflow is updated
 - [Creating and setting up your Account on CTO.ai](https://cto.ai/auth/realms/ops/protocol/openid-connect/registrations?client_id=www&redirect_uri=https://cto.ai/questions&response_mode=fragment&response_type=code&scope=openid&nonce=d2e4022c-04e1-4f70-910c-31a9d25ef321)
 - [install Ops CLI]()
 - [Create AWS Secret and Access keys]()
+- [Create GitHub Token]()
+- [Attach keys on CTO.ai ecrets dashboard]()
 
 
 
