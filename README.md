@@ -127,7 +127,7 @@ Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
 
 Kindly check our [Contributing guide]() on how to propose bugfixes and improvements, and submitting pull requests to the project.
 
-- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/do-k8s/issues
+- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/aws-ecs-fargate/issues
 
 
 ## Limitations 
