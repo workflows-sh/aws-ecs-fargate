@@ -41,3 +41,102 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 
 _note: you'll have to select the timestamp, on loom.com_
 
+
+
+---
+
+# Overview
+
+This repo includes a complete Digital Ocean infrastructure complete with Kubernetes, Container Registry, Postgres, Spaces, Load Balancers  A PaaS workflow with GitOps / ChatOps features that supports ECS, Fargate, Aurora, SQS, Redis, Autoscaling via CDK
+
+## Table of contents
+
+- [AWS ECS Fargate](#aws-ecs-fargate)
+  - [Introduction](#introduction)
+  - [Pre-requisites](#pre-requisites)
+  - [Documentation](#documentation)
+- [Overview](#overview)
+  - [Table of contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Demo](#demo)
+  - [Latest Version](#latest-version)
+  - [Getting Started](#getting-started)
+  - [Usage](#usage)
+  - [Getting help](#getting-help)
+  - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
+  - [Limitations](#limitations)
+  - [Learn more](#learn-more)
+  - [License](#license)
+
+---
+
+## Prerequisites
+
+- A local NodeJS programming environment.
+- An AWS Personal Access key and Secret Key, which you can create via the AWS Console.
+- Docker, AWS CDK, and AWS CLI installed on your machine.
+- NPM Installed.
+
+
+## Demo 
+
+You can try run and deploy the DigitalOcean Kubernetes workflow directly on our [Platform](CTO.ai).
+
+## Latest Version 
+
+The DigitalOcean Kubernetes workflow is updated 
+
+
+## Getting Started 
+
+- [Creating and setting up your Account on CTO.ai](https://cto.ai/auth/realms/ops/protocol/openid-connect/registrations?client_id=www&redirect_uri=https://cto.ai/questions&response_mode=fragment&response_type=code&scope=openid&nonce=d2e4022c-04e1-4f70-910c-31a9d25ef321)
+- [install Ops CLI]()
+- [Create AWS Secret and Access keys]()
+
+
+
+
+- [Creating your API keys and Spaces Access and Secret keys on DigitalOcean]()
+- [Creating your API token on Terraform Cloud]()
+- [Add and update your tokens on CTO.ai secrets dashboard]()
+
+## Usage 
+
+- [Building your Digital Ocean Workflow]()
+- [Running your Digital Ocean Workflow]()
+- [Publishing Workflow]()
+
+
+## Getting help 
+
+CTO.ai DigitalOcean Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
+
+Learn more about CTO.ai community support channels [here](https://cto.ai/community)
+
+- Slack (chat): https://cto.ai/community
+
+
+## Reporting bugs and Contributing 
+
+Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
+
+Kindly check our [Contributing guide]() on how to propose bugfixes and improvements, and submitting pull requests to the project.
+
+- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/do-k8s/issues
+
+
+## Limitations 
+
+
+## Learn more 
+
+- Read the manual at: https://cto.ai/docs#
+
+
+## License 
+
+&copy; CTO.ai, Inc., 2022
+
+Distributed under MIT License (`The MIT License`).
+
+See [LICENSE](LICENSE) for more information.
