@@ -98,9 +98,9 @@ The DigitalOcean Kubernetes workflow is updated
 
 ## Usage 
 
-- [Building your Digital Ocean Workflow]()
-- [Running your Digital Ocean Workflow]()
-- [Publishing Workflow]()
+- [Building your AWS-ECS-Fargate Workflow]()
+- [Running your AWS-ECS-Fargate Workflow]()
+- [Publishing AWS-ECS-Fargate Workflow]()
 
 
 ## Getting help 
