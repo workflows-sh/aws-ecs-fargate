@@ -98,14 +98,17 @@ The DigitalOcean Kubernetes workflow is updated
 
 ## Usage 
 
-- [Building your AWS-ECS-Fargate Workflow]()
-- [Running your AWS-ECS-Fargate Workflow]()
-- [Publishing AWS-ECS-Fargate Workflow]()
+
+- [Build and Run Pipelines]()
+- [Setup and Run Infrastructure]()
+- [Publish Pipelines]()
+- [Publish Pipelines]()
+- [ Build and Publish Ser vices]()
 
 
 ## Getting help 
 
-CTO.ai DigitalOcean Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
+CTO.ai AWS-ECS-fargate Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
 
 Learn more about CTO.ai community support channels [here](https://cto.ai/community)
 
