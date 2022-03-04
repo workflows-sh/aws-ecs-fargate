@@ -10,9 +10,13 @@ When reporting a bug, please try and provide as much context as possible such as
 
 ## Setup
 
-[Fork]() then clone this repository:
+[Fork](https://github.com/workflows-sh/aws-ecs-fargate) then clone this repository:
 
 ```
-$ git clone https://github.com/workflows-sh/do-k8s.git
+$ git clone https://github.com/workflows-sh/aws-ecs-fargate.git
 $ cd do-k8s
 ```
+
+## Submitting Modifications
+
+1. It's generally best to start by opening a new issue describing the bug or feature you're intending to fix. Even if you think it's relatively minor, it's helpful to know what people are working on. Mention in the initial issue that you are planning to work on that bug or feature so that it can be assigned to you.
