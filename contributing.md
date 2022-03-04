@@ -24,3 +24,5 @@ $ cd do-k8s
 2. Follow the normal process of [forking](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the project, and setup a new branch to work in. It's important that each group of changes be done in separate branches in order to ensure that a pull request only includes the commits related to that bug or feature.
 
 3. Do your best to have [well-formatted commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) for each change. This provides consistency throughout the project, and ensures that commit messages are able to be formatted properly by various git tools.
+
+4. Finally, push the commits to your fork and submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
