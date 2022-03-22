@@ -1,11 +1,15 @@
+import fs from 'fs'
+import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
-import { exec } from 'child_process';
+import { exec as oexec } from 'child_process';
+const pexec = util.promisify(oexec);
 
 async function run() {
 
-  const STACK_TYPE = process.env.STACK_TYPE || 'ECS-Fargate';
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
+  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'schier-products'
 
-  sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
+  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
