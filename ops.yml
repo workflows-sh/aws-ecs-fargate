@@ -6,7 +6,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
@@ -27,7 +27,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
@@ -48,7 +48,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
@@ -59,7 +59,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
@@ -70,7 +70,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
@@ -81,7 +81,7 @@ commands:
     env:
       static:
         - STACK_TYPE=aws-ecs-fargate
-        - AWS_REGION=us-west-1
+        - AWS_REGION=us-east-1
       secrets:
         - AWS_ACCESS_KEY_ID
         - AWS_SECRET_ACCESS_KEY
