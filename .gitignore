@@ -1,3 +1,8 @@
-node_modules
-*.js
+/*.js
+node_modules/
 cdk.out
+<<<<<<< HEAD
+.DS_Store
+=======
+.DS_Store
+>>>>>>> wip
