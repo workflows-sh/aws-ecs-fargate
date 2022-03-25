@@ -1,9 +1,9 @@
-import { sdk } from "@cto.ai/sdk";
-import { exec, execSync } from "child_process";
-import { stackEnvPrompt } from "./prompts";
+import { sdk } from '@cto.ai/sdk';
+import { exec, execSync } from 'child_process';
+import { stackEnvPrompt } from './prompts';
 
 async function run() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-ecs-fargate";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 

@@ -1,9 +1,9 @@
-import { sdk } from "@cto.ai/sdk";
-import { exec } from "child_process";
-import { stackEnvPrompt, stackRepoPrompt } from "./prompts";
+import { sdk } from '@cto.ai/sdk';
+import { exec } from 'child_process';
+import { stackEnvPrompt, stackRepoPrompt } from './prompts';
 
 async function run() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-ecs-fargate";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
 
   sdk.log(`⚠️  Destroying ${STACK_TYPE} stack...`);
 
@@ -16,9 +16,9 @@ async function run() {
     prd: [`${STACK_REPO}`, STACK_ENV, `${STACK_ENV}-${STACK_REPO}`],
     all: [
       `${STACK_REPO}`,
-      "dev",
-      "stg",
-      "prd",
+      'dev',
+      'stg',
+      'prd',
       `dev-${STACK_REPO}`,
       `stg-${STACK_REPO}`,
       `stg-${STACK_REPO}`,
@@ -27,7 +27,7 @@ async function run() {
 
   if (!STACKS[STACK_ENV].length) {
     return console.log(
-      "Please try again with environment set to <dev|stg|prd|all>"
+      'Please try again with environment set to <dev|stg|prd|all>'
     );
   }
 
@@ -35,13 +35,13 @@ async function run() {
   const deploy = await exec(
     `./node_modules/.bin/cdk destroy -f -e true ${STACKS[
       STACK_ENV
-    ].reverse().join(" ")}`,
+    ].reverse().join(' ')}`,
     {
       env: {
         ...process.env,
         STACK_TYPE: STACK_TYPE,
         STACK_REPO: STACK_REPO,
-        STACK_TAG: "main",
+        STACK_TAG: 'main',
       },
     }
   );

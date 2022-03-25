@@ -1,14 +1,14 @@
-import fs from "fs";
-import util from "util";
-import { ux, sdk } from "@cto.ai/sdk";
-import { exec as oexec } from "child_process";
-import { secretKeyPrompt, secretValuePrompt, stackEnvPrompt } from "./prompts";
+import fs from 'fs';
+import util from 'util';
+import { ux, sdk } from '@cto.ai/sdk';
+import { exec as oexec } from 'child_process';
+import { secretKeyPrompt, secretValuePrompt, stackEnvPrompt } from './prompts';
 const pexec = util.promisify(oexec);
 
 const ARGS = process.argv.slice(3);
 
 async function init() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-eks-ec2-asg";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-eks-ec2-asg';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -17,7 +17,7 @@ async function init() {
   try {
     const secrets = {};
     const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const vault = await pexec(
       `aws secretsmanager create-secret --name ${KEY} --description "The ${STACK_ENV} secret vault" --secret-string "${JSON.stringify(
@@ -27,12 +27,12 @@ async function init() {
     sdk.setConfig(`${KEY}`, JSON.parse(vault.stdout).ARN);
     console.log(vault.stdout);
   } catch (e) {
-    console.log("there was an error:", e);
+    console.log('there was an error:', e);
   }
 }
 
 async function create() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-eks-ec2-asg";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-eks-ec2-asg';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -42,18 +42,18 @@ async function create() {
 
   try {
     const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const { confirmation } = await ux.prompt<{
       confirmation: boolean;
     }>({
-      type: "confirm",
-      name: "confirmation",
+      type: 'confirm',
+      name: 'confirmation',
       message: `Are you sure you want to set ${SECRET_KEY} to ${SECRET_VALUE} in the ${KEY}?`,
     });
 
     if (!confirmation) {
-      return console.log("Exiting...");
+      return console.log('Exiting...');
     }
 
     const vault_id = await sdk.getConfig(KEY);
@@ -75,12 +75,12 @@ async function create() {
     );
     console.log(update.stdout);
   } catch (e) {
-    console.log("there was an error:", e);
+    console.log('there was an error:', e);
   }
 }
 
 async function list() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-eks-ec2-asg";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-eks-ec2-asg';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -88,7 +88,7 @@ async function list() {
 
   try {
     const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const vault_id = await sdk.getConfig(KEY);
     const vault = await pexec(
@@ -104,15 +104,15 @@ async function list() {
       console.log(`${k}: ${secrets[k]}`);
     }
 
-    console.log("");
+    console.log('');
   } catch (e) {
-    console.log("there was an error:");
+    console.log('there was an error:');
     throw e;
   }
 }
 
 async function remove() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-eks-ec2-asg";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-eks-ec2-asg';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -123,17 +123,17 @@ async function remove() {
     const { confirmation } = await ux.prompt<{
       confirmation: boolean;
     }>({
-      type: "confirm",
-      name: "confirmation",
+      type: 'confirm',
+      name: 'confirmation',
       message: `Are you sure you want to remove ${SECRET_KEY} from the vault?`,
     });
 
     if (!confirmation) {
-      return console.log("Exiting...");
+      return console.log('Exiting...');
     }
 
     const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const vault_id = await sdk.getConfig(KEY);
     const vault = await pexec(
@@ -152,13 +152,13 @@ async function remove() {
     );
     console.log(update.stdout);
   } catch (e) {
-    console.log("there was an error:");
+    console.log('there was an error:');
     throw e;
   }
 }
 
 async function destroy() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-eks-ec2-asg";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-eks-ec2-asg';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -166,20 +166,20 @@ async function destroy() {
 
   try {
     const KEY = `${STACK_ENV}_${STACK_TYPE}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const vault_id = await sdk.getConfig(KEY);
 
     const { confirmation } = await ux.prompt<{
       confirmation: boolean;
     }>({
-      type: "confirm",
-      name: "confirmation",
-      message: "Are you sure you want to delete the vault?",
+      type: 'confirm',
+      name: 'confirmation',
+      message: 'Are you sure you want to delete the vault?',
     });
 
     if (!confirmation) {
-      return console.log("Exiting...");
+      return console.log('Exiting...');
     }
 
     const vault = await pexec(
@@ -188,47 +188,47 @@ async function destroy() {
     const data = JSON.parse(vault.stdout);
     console.log(data);
   } catch (e) {
-    console.log("there was an error:");
+    console.log('there was an error:');
     throw e;
   }
 }
 
 switch (ARGS[0]) {
-  case "init":
+  case 'init':
     init();
 
     break;
 
-  case "set":
+  case 'set':
     create();
 
     break;
 
-  case "ls":
+  case 'ls':
     list();
 
     break;
 
-  case "rm":
+  case 'rm':
     remove();
 
     break;
 
-  case "destroy":
+  case 'destroy':
     destroy();
 
     break;
-  case "help":
+  case 'help':
   default:
-    console.log("\n ⛔️ No sub command provided. See available subcommands:\n");
-    console.log("ops run vault <cmd> [arguments]");
-    console.log("");
-    console.log("Available subcommands:");
-    console.log("   ops run vault init");
-    console.log("   ops run vault set");
-    console.log("   ops run vault ls");
-    console.log("   ops run vault rm");
-    console.log("   ops run vault destroy");
-    console.log("");
+    console.log('\n ⛔️ No sub command provided. See available subcommands:\n');
+    console.log('ops run vault <cmd> [arguments]');
+    console.log('');
+    console.log('Available subcommands:');
+    console.log('   ops run vault init');
+    console.log('   ops run vault set');
+    console.log('   ops run vault ls');
+    console.log('   ops run vault rm');
+    console.log('   ops run vault destroy');
+    console.log('');
     break;
 }

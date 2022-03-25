@@ -1,9 +1,9 @@
-import { ux, sdk } from "@cto.ai/sdk";
-import { exec, execSync } from "child_process";
-import { stackEnvPrompt } from "./prompts";
+import { ux, sdk } from '@cto.ai/sdk';
+import { exec, execSync } from 'child_process';
+import { stackEnvPrompt } from './prompts';
 
 async function run() {
-  const STACK_TYPE = process.env.STACK_TYPE || "aws-ecs-fargate";
+  const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
 
   sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`);
 
@@ -40,7 +40,7 @@ async function run() {
 
   await sleep();
 
-  console.log("Welcome to MySQL, please type your SQL below...");
+  console.log('Welcome to MySQL, please type your SQL below...');
   const mysql = await exec(
     `mysql --protocol tcp --port 3306 --host=127.0.0.1 -u root -pVk4gwG.I=R.IHYStxpQPLg,wB.scV9 dev`,
     {
