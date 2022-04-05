@@ -8,9 +8,9 @@ const pexec = util.promisify(oexec);
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
-  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
+  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'schier-products'
 
-  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
+  sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
@@ -106,7 +106,6 @@ async function run() {
       })
       process.exit(1)
     }
-
   })
   .catch((err) => {
     console.log('There was an error deploying the infrastructure.')
@@ -123,7 +122,6 @@ async function run() {
   })
   
 }
-
 // custom promisify exec that pipes stdout too
 async function exec(cmd, env?: any | null) {
   return new Promise(function(resolve, reject) {

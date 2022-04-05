@@ -69,13 +69,8 @@ async function run() {
     return console.log('Please try again with environment set to <dev|stg|prd|all>')
   }
 
-  console.log('')
-  await ux.print(`🗑  Attempting to destroy the following stacks: ${ux.colors.white(STACKS[STACK_ENV].reverse().join(' '))}`)
-  await ux.print(`📝 ${ux.colors.green('FYI:')} There may be stack resources that must be manually deleted (s3, ECR) or stack dependencies (ECS may have other running services).`)
-  await ux.print(`👉 ${ux.colors.green('So...')} This may require you to go to the AWS Console to delete these resources and re-run this workflow once per service to fully destroy the stack.`)
-  console.log('')
-
-  const deploy = exec(`./node_modules/.bin/cdk destroy -f -e true ${STACKS[STACK_ENV].reverse().join(' ')}`, {
+  sdk.log(`📦 Setting up the stack`)
+  const deploy = await exec(`./node_modules/.bin/cdk destroy -f -e true ${STACKS[STACK_ENV].reverse().join(' ')}`, {
     env: { 
       ...process.env, 
       STACK_TYPE: STACK_TYPE, 

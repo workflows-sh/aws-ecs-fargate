@@ -1,4 +1,4 @@
-# AWS ECS Fargate
+# AWS-ECS-FARGATE
 
 ## Introduction 
 
@@ -41,3 +41,5 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 
 _note: you'll have to select the timestamp, on loom.com_
 
+## License 
+MIT

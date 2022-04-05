@@ -9,7 +9,7 @@ async function run() {
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
   const STACK_TEAM = process.env.OPS_TEAM_NAME || 'schier-products'
 
-  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
+  sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
