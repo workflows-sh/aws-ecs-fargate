@@ -19,7 +19,7 @@ async function run() {
   sdk.log(`🚇 Tunneling to ${STACK_ENV}`)
 
     const bastion = execSync(
-      `aws ec2 describe-instances --region=us-east-1 --filter "Name=tag:Name,Values=${STACK_ENV}-bastion" --query "Reservations[].Instances[?State.Name == 'running'].InstanceId[]" --output text`, 
+      `aws ec2 describe-instances --region=$AWS_REGION --filter "Name=tag:Name,Values=${STACK_ENV}-${STACK_TYPE}-bastion" --query "Reservations[].Instances[?State.Name == 'running'].InstanceId[]" --output text`, 
       {
         env: process.env
       }
@@ -27,7 +27,7 @@ async function run() {
 
   console.log(bastion.toString())
 
-  const tunnel = await exec(`aws ssm start-session --target $BASTIONID --region us-east-1`, {
+  const tunnel = exec(`aws ssm start-session --target $BASTIONID --region $AWS_REGION`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,

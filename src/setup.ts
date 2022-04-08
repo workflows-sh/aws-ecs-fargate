@@ -7,7 +7,7 @@ const pexec = util.promisify(oexec);
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
-  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
+  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'schier-products'
 
   sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
 

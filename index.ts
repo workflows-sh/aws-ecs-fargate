@@ -1,7 +1,7 @@
 import { Stack } from './src/stack/index';
 
 const STACK_ENV = process.env.STACK_ENV || 'dev'
-const STACK_ORG = process.env.STACK_ORG || 'cto-ai'
+const STACK_ORG = process.env.STACK_ORG || 'schier'
 const STACK_REPO = process.env.STACK_REPO || 'sample-app'
 const STACK_TAG = process.env.STACK_TAG || 'main'
 const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate'

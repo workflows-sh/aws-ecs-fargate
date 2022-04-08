@@ -70,7 +70,7 @@ export default class Service extends cdk.Stack {
     }
 
     this.id = id
-    this.org = props?.org ?? 'cto-ai'
+    this.org = props?.org ?? 'schier'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
     this.repo = props?.repo ?? 'sample-app'

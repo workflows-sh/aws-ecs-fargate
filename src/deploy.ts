@@ -1,11 +1,16 @@
+import fs from 'fs'
+import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
-import { exec } from 'child_process';
+import { exec as oexec } from 'child_process';
+const pexec = util.promisify(oexec);
+
 
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
+  const STACK_TEAM = process.env.OPS_TEAM_NAME || 'schier-products'
 
-  sdk.log(`🛠 Loading up ${STACK_TYPE} stack...`)
+  sdk.log(`🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...`)
 
   const { STACK_ENV } = await ux.prompt<{
     STACK_ENV: string
@@ -35,13 +40,19 @@ async function run() {
     })
 
   const STACKS:any = {
-    'dev': [`${STACK_ENV}-${STACK_REPO}`],
-    'stg': [`${STACK_ENV}-${STACK_REPO}`],
-    'prd': [`${STACK_ENV}-${STACK_REPO}`],
+    'dev': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
+    'stg': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
+    'prd': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
     'all': [
-      `dev-${STACK_REPO}`,
-      `stg-${STACK_REPO}`,
-      `stg-${STACK_REPO}`
+      `${STACK_REPO}-${STACK_TYPE}`,
+
+      `dev-${STACK_TYPE}`,
+      `stg-${STACK_TYPE}`,
+      `prd-${STACK_TYPE}`,
+
+      `dev-${STACK_REPO}-${STACK_TYPE}`,
+      `stg-${STACK_REPO}-${STACK_TYPE}`,
+      `prd-${STACK_REPO}-${STACK_TYPE}`
     ]
   }
 
@@ -49,47 +60,76 @@ async function run() {
     return console.log('Please try again with environment set to <dev|stg|prd|all>')
   }
 
-  sdk.log(`📦 Deploying ${STACK_TAG} to ${STACK_ENV}`)
+  await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
+  console.log('\n')
 
-  /*const synth =*/ await exec(`npm run cdk synth ${STACK_ENV}`, {
+  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
-      STACK_TYPE: STACK_TYPE, 
       STACK_ENV: STACK_ENV,
-      STACK_REPO: STACK_REPO,
-      STACK_TAG: STACK_TAG
-    }
-  })
-  // synth.stdout.pipe(process.stdout)
-  // synth.stderr.pipe(process.stdout)
-
-  const deploy = await exec(`npm run cdk deploy ${STACKS[STACK_ENV].join(' ')}`, {
-    env: { 
-      ...process.env, 
       STACK_TYPE: STACK_TYPE, 
-      STACK_ENV: STACK_ENV, 
       STACK_REPO: STACK_REPO, 
       STACK_TAG: STACK_TAG
     }
   })
-  deploy.stdout.pipe(process.stdout)
-  deploy.stderr.pipe(process.stderr)
+  // Get the AWS command to retrieve kube config
+  .then(async () => {
 
-  sdk.log(`🧹 Cleaning up...`)
-  const cleanup = await exec('rm -Rf ./cdk.out')
-  cleanup.stdout.pipe(process.stdout)
-  cleanup.stderr.pipe(process.stderr)
+    try {
 
-  sdk.track([], {
-    event_name: 'deployment',
-    event_action: 'succeeded',
-    environment: STACK_ENV,
-    repo: STACK_REPO,
-    branch: STACK_TAG,
-    commit: STACK_TAG,
-    image: STACK_TAG
+      const json = await fs.readFileSync('./outputs.json', 'utf8')
+      const outputs = JSON.parse(json)
+
+      const STATE_CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
+      sdk.setConfig(STATE_CONFIG_KEY, JSON.stringify(outputs))
+
+      sdk.track([], {
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: STACK_ENV,
+        repo: STACK_REPO,
+        branch: STACK_TAG,
+        commit: STACK_TAG,
+        image: `${STACK_REPO}:${STACK_TAG}`
+      })
+
+    } catch (e) {
+      console.log('There was an error updating workflow state', e)
+      sdk.track([], {
+        event_name: 'deployment',
+        event_action: 'failed',
+        environment: STACK_ENV,
+        repo: STACK_REPO,
+        branch: STACK_TAG,
+        commit: STACK_TAG,
+        image: `${STACK_REPO}:${STACK_TAG}`
+      })
+      process.exit(1)
+    }
   })
-
+  .catch((err) => {
+    console.log('There was an error deploying the infrastructure.')
+    sdk.track([], {
+      event_name: 'deployment',
+      event_action: 'failed',
+      environment: STACK_ENV,
+      repo: STACK_REPO,
+      branch: STACK_TAG,
+      commit: STACK_TAG,
+      image: `${STACK_REPO}:${STACK_TAG}`
+    })
+    process.exit(1)
+  })
+  
+}
+// custom promisify exec that pipes stdout too
+async function exec(cmd, env?: any | null) {
+  return new Promise(function(resolve, reject) {
+    const child = oexec(cmd, env)
+    child.stdout.pipe(process.stdout)
+    child.stderr.pipe(process.stderr)
+    child.on('close', (code) => { code ? reject(child.stderr) : resolve(child.stdout) })
+  })
 }
 
 run()
