@@ -149,9 +149,12 @@ export default class Service extends cdk.Stack {
         logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${this.repo}-${this.key}`}),
         environment: environment
       }
-    })
+    });
     fargateService.service.connections.allowToDefaultPort(this.db, 'MySQL access')
-    fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10')
+    fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
+    fargateService.targetGroup.configureHealthCheck({
+      path: '/login',
+    });
 
     // Setup AutoScaling policy
     const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 2 })
