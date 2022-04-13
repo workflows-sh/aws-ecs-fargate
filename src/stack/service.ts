@@ -1,20 +1,20 @@
-import * as cdk from "@aws-cdk/core";
-import * as ec2 from "@aws-cdk/aws-ec2";
-import * as ecr from "@aws-cdk/aws-ecr";
-import * as ecs from "@aws-cdk/aws-ecs";
-import * as rds from "@aws-cdk/aws-rds";
-import * as sm from "@aws-cdk/aws-secretsmanager";
-import * as s3 from "@aws-cdk/aws-s3";
-import * as s3Deploy from "@aws-cdk/aws-s3-deployment";
-import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import * as sqs from "@aws-cdk/aws-sqs";
-import * as elasticache from "./redis";
-import * as autoscaling from "@aws-cdk/aws-autoscaling";
+import * as cdk from '@aws-cdk/core';
+import * as ec2 from '@aws-cdk/aws-ec2';
+import * as ecr from '@aws-cdk/aws-ecr';
+import * as ecs from '@aws-cdk/aws-ecs';
+import * as rds from '@aws-cdk/aws-rds';
+import * as sm from '@aws-cdk/aws-secretsmanager';
+import * as s3 from '@aws-cdk/aws-s3';
+import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as sqs from '@aws-cdk/aws-sqs';
+import * as elasticache from './redis';
+import * as autoscaling from '@aws-cdk/aws-autoscaling';
 
-import ecsPatterns = require("@aws-cdk/aws-ecs-patterns");
+import ecsPatterns = require('@aws-cdk/aws-ecs-patterns');
 
-import util from "util";
-import { exec as oexec } from "child_process";
+import util from 'util';
+import { exec as oexec } from 'child_process';
 const pexec = util.promisify(oexec);
 
 interface StackProps {
@@ -54,28 +54,28 @@ export default class Service extends cdk.Stack {
     super(scope, id);
 
     if (!props?.cluster) {
-      throw new Error("You must provide a Cluster for Service");
+      throw new Error('You must provide a Cluster for Service');
     }
     if (!props?.registry) {
-      throw new Error("You must provide a Registry for Service");
+      throw new Error('You must provide a Registry for Service');
     }
     if (!props?.db) {
-      throw new Error("You must provide a db for Service");
+      throw new Error('You must provide a db for Service');
     }
     if (!props?.redis) {
-      throw new Error("You must provide a redis for Service");
+      throw new Error('You must provide a redis for Service');
     }
     if (!props?.mq) {
-      throw new Error("You must provide a mq for Service");
+      throw new Error('You must provide a mq for Service');
     }
 
     this.id = id;
-    this.org = props?.org ?? "cto-ai";
-    this.env = props?.env ?? "dev";
-    this.key = props?.key ?? "aws-ecs-fargate";
-    this.repo = props?.repo ?? "sample-app";
-    this.tag = props?.tag ?? "main";
-    this.entropy = props?.entropy ?? "01012022";
+    this.org = props?.org ?? 'cto-ai';
+    this.env = props?.env ?? 'dev';
+    this.key = props?.key ?? 'aws-ecs-fargate';
+    this.repo = props?.repo ?? 'sample-app';
+    this.tag = props?.tag ?? 'main';
+    this.entropy = props?.entropy ?? '01012022';
 
     this.cluster = props.cluster;
     this.registry = props.registry;
@@ -89,7 +89,7 @@ export default class Service extends cdk.Stack {
     const bucket = new s3.Bucket(this, `${this.repo}-${this.key}-bucket`, {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      websiteIndexDocument: "index.html",
+      websiteIndexDocument: 'index.html',
     });
 
     // We can enable deployment from the local system using this
@@ -97,7 +97,7 @@ export default class Service extends cdk.Stack {
       this,
       `${this.repo}-${this.key}-deployment`,
       {
-        sources: [s3Deploy.Source.asset("./sample-app/dist")],
+        sources: [s3Deploy.Source.asset('./sample-app/dist')],
         destinationBucket: bucket,
       }
     );
@@ -119,7 +119,7 @@ export default class Service extends cdk.Stack {
     );
 
     const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`
-      .replace(/-/g, "_")
+      .replace(/-/g, '_')
       .toUpperCase();
     const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(
       this,
@@ -141,9 +141,9 @@ export default class Service extends cdk.Stack {
 
     const environment = Object.assign(
       {
-        DB_HOST: CLUSTER_VAULT.secretValueFromJson("host").toString(),
-        DB_PORT: CLUSTER_VAULT.secretValueFromJson("port").toString(),
-        DB_USER: CLUSTER_VAULT.secretValueFromJson("username").toString(),
+        DB_HOST: CLUSTER_VAULT.secretValueFromJson('host').toString(),
+        DB_PORT: CLUSTER_VAULT.secretValueFromJson('port').toString(),
+        DB_USER: CLUSTER_VAULT.secretValueFromJson('username').toString(),
         REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
         REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
         MQ_URL: this.mq?.queueUrl,
@@ -154,8 +154,8 @@ export default class Service extends cdk.Stack {
     );
 
     // get env vars that can be used to update container runtime task definition
-    const PORT = service_secrets["PORT"]
-      ? parseInt(service_secrets["PORT"])
+    const PORT = service_secrets['PORT']
+      ? parseInt(service_secrets['PORT'])
       : 3000;
 
     const fargateService =
@@ -182,11 +182,11 @@ export default class Service extends cdk.Stack {
       );
     fargateService.service.connections.allowToDefaultPort(
       this.db,
-      "MySQL access"
+      'MySQL access'
     );
     fargateService.targetGroup.setAttribute(
-      "deregistration_delay.timeout_seconds",
-      "10"
+      'deregistration_delay.timeout_seconds',
+      '10'
     );
 
     // Setup AutoScaling policy
@@ -195,25 +195,25 @@ export default class Service extends cdk.Stack {
       maxCapacity: 5,
     });
 
-    scaling.scaleOnCpuUtilization("CpuScaling", {
+    scaling.scaleOnCpuUtilization('CpuScaling', {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),
       scaleOutCooldown: cdk.Duration.seconds(60),
     });
 
-    scaling.scaleOnMemoryUtilization("MemoryScaling", {
+    scaling.scaleOnMemoryUtilization('MemoryScaling', {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),
       scaleOutCooldown: cdk.Duration.seconds(60),
     });
 
-    scaling.scaleOnSchedule("DaytimeScaleDown", {
-      schedule: autoscaling.Schedule.expression("cron(0 23 ? * MON-FRI *)"),
+    scaling.scaleOnSchedule('DaytimeScaleDown', {
+      schedule: autoscaling.Schedule.expression('cron(0 23 ? * MON-FRI *)'),
       minCapacity: 1,
     });
 
-    scaling.scaleOnSchedule("DaytimeScaleUp", {
-      schedule: autoscaling.Schedule.expression("cron(0 8 ? * MON-FRI *)"),
+    scaling.scaleOnSchedule('DaytimeScaleUp', {
+      schedule: autoscaling.Schedule.expression('cron(0 8 ? * MON-FRI *)'),
       minCapacity: 3,
     });
 
