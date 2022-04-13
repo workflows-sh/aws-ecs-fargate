@@ -11,7 +11,6 @@ import * as sqs from '@aws-cdk/aws-sqs';
 import * as elasticache from './redis'
 import * as autoscaling from '@aws-cdk/aws-autoscaling';
 
-
 import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
 
 import util from 'util';
