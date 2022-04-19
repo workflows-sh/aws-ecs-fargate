@@ -3,6 +3,7 @@ import * as ec2 from '@aws-cdk/aws-ec2'
 import * as ecs from '@aws-cdk/aws-ecs'
 import * as rds from '@aws-cdk/aws-rds'
 import * as sqs from '@aws-cdk/aws-sqs'
+import * as iam from '@aws-cdk/aws-iam'
 import * as elasticache from './redis'
 
 interface StackProps {
@@ -101,6 +102,24 @@ export default class Cluster extends cdk.Stack {
 
     const redis = new elasticache.Cluster(this, `${this.id}-redis`, { vpc: vpc });
     const mq = new sqs.Queue(this, `${this.id}-sqs`);
+
+    const baseSQSPolicyDocument = new iam.PolicyDocument({
+      statements: [
+          new iam.PolicyStatement({
+              actions: ['sqs:*'],
+              effect: iam.Effect.ALLOW,
+              principals: [new iam.AnyPrincipal()],
+              resources: [
+                  mq.queueArn
+              ]
+          })
+      ]
+    });
+  
+    new sqs.CfnQueuePolicy(this, 'baseSQSPolicyDocument', {
+      queues: [mq.queueUrl],
+      policyDocument: baseSQSPolicyDocument.toJSON()
+    });
 
     this.vpc = vpc;
     this.cluster = cluster;
