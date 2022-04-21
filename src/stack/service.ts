@@ -152,6 +152,10 @@ export default class Service extends cdk.Stack {
       }
     });
     fargateService.service.connections.allowToDefaultPort(this.db, 'MySQL access')
+    const serviceConstruct: ecs.FargateService = fargateService.service
+    const scn: cdk.ConstructNode = serviceConstruct.node;
+    const theFirst: ecs.CfnService = scn.children[0] as ecs.CfnService;
+    theFirst.addPropertyOverride("EnableExecuteCommand", true);
     fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
     fargateService.targetGroup.configureHealthCheck({
       path: '/login',
