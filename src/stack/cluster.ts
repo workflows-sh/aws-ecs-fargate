@@ -28,7 +28,8 @@ export default class Cluster extends cdk.Stack {
   public readonly vpc: ec2.Vpc
   public readonly cluster: ecs.Cluster
   public readonly db: rds.ServerlessCluster
-  public readonly mq: sqs.Queue
+  public readonly mq1: sqs.Queue
+  public readonly mq2: sqs.Queue
   public readonly redis: cdk.Construct
   public readonly bastion: ec2.BastionHostLinux
 
@@ -101,7 +102,8 @@ export default class Cluster extends cdk.Stack {
     });
 
     const redis = new elasticache.Cluster(this, `${this.id}-redis`, { vpc: vpc });
-    const mq = new sqs.Queue(this, `${this.id}-sqs`);
+    const mq1 = new sqs.Queue(this, `${this.id}-sqs-one`);
+    const mq2 = new sqs.Queue(this, `${this.id}-sqs-two`);
 
     const baseSQSPolicyDocument = new iam.PolicyDocument({
       statements: [
@@ -110,14 +112,15 @@ export default class Cluster extends cdk.Stack {
               effect: iam.Effect.ALLOW,
               principals: [new iam.AnyPrincipal()],
               resources: [
-                  mq.queueArn
+                  mq1.queueArn,
+                  mq2.queueArn,
               ]
           })
       ]
     });
-  
+
     new sqs.CfnQueuePolicy(this, 'baseSQSPolicyDocument', {
-      queues: [mq.queueUrl],
+      queues: [mq1.queueUrl, mq1.queueUrl],
       policyDocument: baseSQSPolicyDocument.toJSON()
     });
 
@@ -126,7 +129,8 @@ export default class Cluster extends cdk.Stack {
     this.bastion = bastion;
     this.redis = redis;
     this.db = db;
-    this.mq = mq;
+    this.mq1 = mq1;
+    this.mq2 = mq2;
 
     new cdk.CfnOutput(this, `${this.id}VpcId`, { value: this.vpc.vpcId})
     new cdk.CfnOutput(this, `${this.id}ClusterArn`, { value: this.cluster.clusterArn})

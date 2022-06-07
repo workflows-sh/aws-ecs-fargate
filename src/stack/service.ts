@@ -93,12 +93,6 @@ export default class Service extends cdk.Stack {
       websiteIndexDocument: "index.html"
     })
 
-    // We can enable deployment from the local system using this
-    const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
-      sources: [s3Deploy.Source.asset("./sample-app/dist")],
-      destinationBucket: bucket
-    })
-
     // Cloudfront
     const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.repo}-${this.key}-cloudfront`, {
       originConfigs: [
@@ -109,6 +103,14 @@ export default class Service extends cdk.Stack {
           behaviors: [{isDefaultBehavior: true}]
         },
       ]
+    })
+
+    // We can enable deployment from the local system using this
+    const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
+      sources: [s3Deploy.Source.asset("./sample-app/dist")],
+      destinationBucket: bucket,
+      distribution: cf,
+      distributionPaths: ['/build*']
     })
 
     const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
