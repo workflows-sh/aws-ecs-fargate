@@ -1,4 +1,113 @@
-# AWS ECS Fargate
+
+# Overview
+
+
+This repo includes a complete AWS - ECS fargate Infrastructure stack that enables a PaaS workflow with GitOps / ChatOps features and supports ECS, Fargate, Aurora, SQS, Redis, and Autoscaling via CDK.
+
+
+## Table of contents
+
+- [Overview](#overview)
+  - [Table of contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Demo](#demo)
+  - [Latest Version](#latest-version)
+  - [Getting Started](#getting-started)
+  - [Usage](#usage)
+    - [Build and Publish workflow on Ops CLI](#build-and-publish-workflow-on-ops-cli)
+    - [Build and Publish workflow on Slack](#build-and-publish-workflow-on-slack)
+  - [Getting help](#getting-help)
+  - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
+  - [Limitations](#limitations)
+  - [Learn more](#learn-more)
+  - [License](#license)
+  - [Introduction](#introduction)
+  - [Pre-requisites](#pre-requisites)
+  - [Documentation](#documentation)
+
+---
+
+## Prerequisites
+
+- [A local NodeJS programming environment and Workflow CLI installed on your machine](https://cto.ai/docs/install-cli)
+- [An AWS Personal Access key and Secret Key, which you can create via the AWS Console](https://cto.ai/docs/aws-ecs-fargate#create-secrets-from-settings)
+- [Docker](https://docs.docker.com/get-docker/), [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html), and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed on your machine.
+- [NVM Installed](https://github.com/nvm-sh/nvm)
+
+
+## Demo 
+
+You can try run and deploy the AWS -ECS fargate Workflow directly on our Platform
+
+## Latest Version 
+
+The DigitalOcean Kubernetes workflow is updated 
+
+
+## Getting Started 
+
+- [Creating and setting up your Account on CTO.ai](https://cto.ai/auth/realms/ops/protocol/openid-connect/registrations?client_id=www&redirect_uri=https://cto.ai/questions&response_mode=fragment&response_type=code&scope=openid&nonce=d2e4022c-04e1-4f70-910c-31a9d25ef321)
+- [install Ops CLI]()
+- [Create AWS Secret and Access keys]()
+- [Create GitHub Token]()
+- [Attach keys on CTO.ai secrets dashboard]()
+
+
+## Usage 
+
+### Build and Publish workflow on Ops CLI
+
+- [Build and Run Pipelines]()
+- [Setup and Run Infrastructure]()
+- [Publish Pipelines]()
+- [ Build and Publish Services]()
+
+### Build and Publish workflow on Slack 
+
+- [Build and Run Pipelines]()
+- [Build and Pubish Services]()
+
+## Getting help 
+
+CTO.ai AWS-ECS-fargate Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
+
+Learn more about CTO.ai community support channels [here](https://cto.ai/community)
+
+- Slack (chat): https://cto.ai/community
+
+
+## Reporting bugs and Contributing 
+
+Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
+
+Kindly check our [Contributing guide]() on how to propose bugfixes and improvements, and submitting pull requests to the project.
+
+- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/aws-ecs-fargate/issues
+
+
+## Limitations 
+
+
+## Learn more 
+
+- Read the manual at: https://cto.ai/docs#
+
+
+## License 
+
+&copy; CTO.ai, Inc., 2022
+
+Distributed under MIT License (`The MIT License`).
+
+See [LICENSE](LICENSE) for more information.
+
+
+
+---
+
+// include in readme?
+
+AWS ECS Fargate
 
 ## Introduction 
 
@@ -40,4 +149,3 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 - [38:44](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Monitoring & Searching container logs
 
 _note: you'll have to select the timestamp, on loom.com_
-
