@@ -13,6 +13,9 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
   - [Demo](#demo)
   - [Latest Version](#latest-version)
   - [Getting Started](#getting-started)
+    - [Set Up your Account on CTO.ai](#set-up-your-account-on-ctoai)
+    - [Create Secrets from Settings](#create-secrets-from-settings)
+    - [Create your Sample - App](#create-your-sample---app)
   - [Usage](#usage)
     - [Build and Publish workflow on Ops CLI](#build-and-publish-workflow-on-ops-cli)
     - [Build and Publish workflow on Slack](#build-and-publish-workflow-on-slack)
@@ -37,20 +40,26 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
 
 ## Demo 
 
-You can try run and deploy the AWS -ECS fargate Workflow directly on our Platform
+You can run and deploy the AWS -ECS fargate Workflow directly on our [Platform]()
 
 ## Latest Version 
 
-The DigitalOcean Kubernetes workflow is updated 
+The AWS - ECS Fargate Workflow is running on the latest version
 
 
 ## Getting Started 
 
-- [Creating and setting up your Account on CTO.ai](https://cto.ai/auth/realms/ops/protocol/openid-connect/registrations?client_id=www&redirect_uri=https://cto.ai/questions&response_mode=fragment&response_type=code&scope=openid&nonce=d2e4022c-04e1-4f70-910c-31a9d25ef321)
-- [install Ops CLI]()
-- [Create AWS Secret and Access keys]()
-- [Create GitHub Token]()
-- [Attach keys on CTO.ai secrets dashboard]()
+### Set Up your Account on CTO.ai
+
+Before you can deploy this Workflow, you need to [Setup your account on CTO.ai](https://cto.ai/docs/setup-flow)
+
+### Create Secrets from Settings 
+
+Secrets are encrypted environment variables that CTO.ai utilizes within your workflow to build and run your application and deployments. [Follow this guide to create secrets from settings.](https://cto.ai/docs/aws-ecs-fargate#create-secrets-from-settings), and also [generate your Github token](https://cto.ai/docs/aws-ecs-fargate#generate-github-token)
+
+### Create your Sample - App
+
+[You need to build and run your Sample-app](https://cto.ai/docs/aws-ecs-fargate#ecs---fargate-demo). Your sample App can be a Node.js HTTP server with a Dockerfile and `ops.yml` file.
 
 
 ## Usage 
