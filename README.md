@@ -17,7 +17,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Create Secrets from Settings](#create-secrets-from-settings)
     - [Create your Sample - App](#create-your-sample---app)
   - [Usage](#usage)
-    - [Build and Publish workflow on Ops CLI](#build-and-publish-workflow-on-ops-cli)
+    - [Build and Publish Pipelines](#build-and-publish-pipelines)
     - [Build and Publish workflow on Slack](#build-and-publish-workflow-on-slack)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
@@ -64,12 +64,17 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 
 ## Usage 
 
-### Build and Publish workflow on Ops CLI
+### Build and Publish Pipelines 
 
-- [Build and Run Pipelines]()
-- [Setup and Run Infrastructure]()
-- [Publish Pipelines]()
-- [ Build and Publish Services]()
+- [Build Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
+
+
+- [Run Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#run-pipelines-locally-with-the-ctoai-cli)
+
+
+- [Set up your Infrastructure](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
+
+
 
 ### Build and Publish workflow on Slack 
 
