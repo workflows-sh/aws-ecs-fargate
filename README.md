@@ -19,6 +19,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
   - [Usage](#usage)
     - [Build and Publish Pipelines](#build-and-publish-pipelines)
     - [Build and Publish Services](#build-and-publish-services)
+    - [Trigger your Pipelines and Services](#trigger-your-pipelines-and-services)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
   - [Limitations](#limitations)
@@ -82,7 +83,17 @@ Follow the following steps below to configure and deploy your AWS - ECS Fargate 
 
 ### Build and Publish Services 
 
-- Bui
+- [Build Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
+
+
+- [Publish Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#publish-services-locally-with-the-ctoai-cli)
+
+
+### Trigger your Pipelines and Services
+
+When you are done building and publishing your Pipelines and Services, you can trigger them sing event triggers. 
+
+
 
 ## Getting help 
 
