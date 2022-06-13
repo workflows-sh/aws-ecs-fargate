@@ -18,7 +18,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Create your Sample - App](#create-your-sample---app)
   - [Usage](#usage)
     - [Build and Publish Pipelines](#build-and-publish-pipelines)
-    - [Build and Publish workflow on Slack](#build-and-publish-workflow-on-slack)
+    - [Build and Publish Services](#build-and-publish-services)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
   - [Limitations](#limitations)
@@ -64,6 +64,8 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 
 ## Usage 
 
+Follow the following steps below to configure and deploy your AWS - ECS Fargate Workflow
+
 ### Build and Publish Pipelines 
 
 - [Build Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
@@ -75,11 +77,12 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 - [Set up your Infrastructure](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
 
 
+- [Publish Pipelines locally with CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
 
-### Build and Publish workflow on Slack 
 
-- [Build and Run Pipelines]()
-- [Build and Pubish Services]()
+### Build and Publish Services 
+
+- Bui
 
 ## Getting help 
 
