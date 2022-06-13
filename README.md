@@ -62,6 +62,7 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 
 [You need to build and run your Sample-app](https://cto.ai/docs/aws-ecs-fargate#ecs---fargate-demo). Your sample App can be a Node.js HTTP server with a Dockerfile and `ops.yml` file.
 
+---
 
 ## Usage 
 
@@ -81,12 +82,18 @@ Follow the following steps below to configure and deploy your AWS - ECS Fargate 
 - [Publish Pipelines locally with CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
 
 
+---
+
+
 ### Build and Publish Services 
 
 - [Build Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
 
 
 - [Publish Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#publish-services-locally-with-the-ctoai-cli)
+
+
+---
 
 
 ### Trigger your Pipelines and Services
@@ -96,7 +103,7 @@ When you are done building and publishing your Pipelines and Services, you can t
 
 - [Trigger your Pipelines and Services](https://cto.ai/docs/aws-ecs-fargate#trigger-your-pipelines-and-services)
 
-
+---
 
 ## Getting help 
 
