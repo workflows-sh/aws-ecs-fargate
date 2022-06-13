@@ -20,14 +20,12 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Build and Publish Pipelines](#build-and-publish-pipelines)
     - [Build and Publish Services](#build-and-publish-services)
     - [Trigger your Pipelines and Services](#trigger-your-pipelines-and-services)
+    - [Watch Platform Setup on Loom](#watch-platform-setup-on-loom)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
   - [Limitations](#limitations)
   - [Learn more](#learn-more)
   - [License](#license)
-  - [Introduction](#introduction)
-  - [Pre-requisites](#pre-requisites)
-  - [Documentation](#documentation)
 
 ---
 
@@ -105,59 +103,10 @@ When you are done building and publishing your Pipelines and Services, you can t
 
 ---
 
-## Getting help 
+### Watch Platform Setup on Loom 
 
-CTO.ai AWS-ECS-Fargate Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
+You can watch the setup of this Workflow directly on Loom. 
 
-Learn more about CTO.ai community support channels [here](https://cto.ai/community)
-
-- Slack (chat): https://cto.ai/community
-
-
-## Reporting bugs and Contributing 
-
-Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
-
-Kindly check our [Contributing guide]() on how to propose bugfixes and improvements, and submitting pull requests to the project.
-
-- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/aws-ecs-fargate/issues
-
-
-## Limitations 
-
-
-## Learn more 
-
-- Read the manual at: https://cto.ai/docs#
-
-
-## License 
-
-&copy; CTO.ai, Inc., 2022
-
-Distributed under MIT License (`The MIT License`).
-
-See [LICENSE](LICENSE) for more information.
-
-
-
----
-
-// include in readme?
-
-AWS ECS Fargate
-
-## Introduction 
-
-A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.ai
-
-## Pre-requisites
-
-- Docker, Node (NVM) 12+ & npm installed
-- Sign up for CTO.ai, setup CTO.ai team
-- Install Ops CLI, Connect Github & Slack
-
-## Documentation 
 
 [![diagram](docs/img/diagram.png)](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0)
 
@@ -187,3 +136,42 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 - [38:44](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Monitoring & Searching container logs
 
 _note: you'll have to select the timestamp, on loom.com_
+
+---
+
+## Getting help 
+
+CTO.ai AWS-ECS-Fargate Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO DOKS at CTO.ai
+
+Learn more about CTO.ai community support channels [here](https://cto.ai/community)
+
+- Slack (chat): https://cto.ai/community
+
+
+## Reporting bugs and Contributing 
+
+Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
+
+Kindly check our [Contributing guide]() on how to propose bugfixes and improvements, and submitting pull requests to the project.
+
+- View issues related to this image in our GitHub repository: https://github.com/workflows-sh/aws-ecs-fargate/issues
+
+
+---
+
+## Limitations 
+
+
+## Learn more 
+
+- Read the manual at: https://cto.ai/docs#
+
+---
+
+## License 
+
+&copy; CTO.ai, Inc., 2022
+
+Distributed under MIT License (`The MIT License`).
+
+See [LICENSE](LICENSE) for more information.
