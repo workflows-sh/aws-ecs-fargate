@@ -29,6 +29,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
   - [Limitations](#limitations)
   - [Learn more](#learn-more)
+  - [Other questions?](#other-questions)
   - [License](#license)
 
 ---
@@ -196,9 +197,14 @@ Kindly check our [Contributing guide]() on how to propose bugfixes and improveme
 
 ## Learn more 
 
-- Read the manual at: https://cto.ai/docs#
+- Read the manual on our [Docs](https://cto.ai/docs)
 
 ---
+
+## Other questions?
+
+Check out our [FAQ](https://cto.ai/docs/faq), send us an [email](https://cto.ai/docs/contact-support), or open an issue with your question. We'd love to hear from you!
+
 
 ## License 
 
