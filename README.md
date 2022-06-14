@@ -125,10 +125,13 @@ Follow the following steps below to configure and deploy your AWS - ECS Fargate 
 
 ### Trigger your Pipelines and Services
 
-When you are done building and publishing your Pipelines and Services, you can trigger them using event triggers. 
+When you are done building and publishing your Pipelines and Services, you can trigger them using **Event Triggers** 
 
 
-- [Trigger your Pipelines and Services](https://cto.ai/docs/aws-ecs-fargate#trigger-your-pipelines-and-services)
+- [Trigger your Pipelines using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-pipelines-using-events)
+
+
+- [Trigger your Services using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-services-using-events)
 
 ---
 
