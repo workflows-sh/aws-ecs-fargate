@@ -126,7 +126,7 @@ Kindly check our [Contributing guide](https://github.com/workflows-sh/aws-ecs-fa
 
 ## Learn more 
 
-- Read the manual on our [Docs](https://cto.ai/docs)
+- Read the manual on our [Docs](https://cto.ai/docs/aws-ecs-fargate)
 
 ---
 
