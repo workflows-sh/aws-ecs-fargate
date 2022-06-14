@@ -107,7 +107,7 @@ Follow the following steps below to configure and deploy your AWS - ECS Fargate 
 - [Set up your Infrastructure](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
 
 
-- [Publish Pipelines locally with CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
+- [Publish Pipelines locally with the workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
 
 
 ---
