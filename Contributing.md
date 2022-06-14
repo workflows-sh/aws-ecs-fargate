@@ -52,6 +52,3 @@ When reporting a bug pr issue, please try to provide as much context as possible
 
 See the [LICENSE](LICENSE) file for our project's licensing.
 
-
-
-

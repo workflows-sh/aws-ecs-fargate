@@ -39,7 +39,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
 
 ## Demo 
 
-You can run and deploy the AWS -ECS fargate Workflow directly on our [Platform]()
+You can run and deploy the AWS-ECS-Fargate Workflow directly on our [Platform](https://cto.ai/), kindly follow the steps below to get started 🚀
 
 ## Latest Version 
 
