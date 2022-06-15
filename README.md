@@ -147,4 +147,4 @@ Check out our [FAQ](https://cto.ai/docs/faq), send us an [email](https://cto.ai/
 
 Distributed under MIT License (`The MIT License`).
 
-See [LICENSE](LICENSE) for more information.
+See [LICENSE](https://github.com/workflows-sh/aws-ecs-fargate/blob/documentation/License) for more information.
