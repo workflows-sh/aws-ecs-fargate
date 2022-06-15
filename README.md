@@ -48,6 +48,11 @@ The AWS - ECS Fargate Workflow is running on the latest version
 
 ## Getting Started 
 
+```
+git clone https://github.com/workflows-sh/aws-ecs-fargate
+cd aws-ecs-fargate
+```
+
 ### Set Up your Account on CTO.ai
 
 Before you can deploy this Workflow, you need to [Setup your account on CTO.ai](https://cto.ai/docs/setup-flow)
