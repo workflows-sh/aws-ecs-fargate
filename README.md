@@ -50,6 +50,7 @@ The AWS - ECS Fargate Workflow is running on the latest version
 
 ```
 git clone https://github.com/workflows-sh/aws-ecs-fargate
+
 cd aws-ecs-fargate
 ```
 
