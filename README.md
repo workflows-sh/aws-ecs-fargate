@@ -1,8 +1,7 @@
 
-# Overview
-
 ![aws-fargate](https://user-images.githubusercontent.com/24816990/174084189-2a529767-b3ba-4688-8750-f8dedb2abbd6.svg)
 
+# Overview
 
 This repo includes a complete AWS - ECS fargate Infrastructure stack that enables a PaaS workflow with GitOps / ChatOps features and supports ECS, Fargate, Aurora, SQS, Redis, and Autoscaling via CDK.
 
