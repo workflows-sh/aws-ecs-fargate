@@ -114,7 +114,7 @@ When you are done building and publishing your Pipelines and Services, you can t
 
 ## Getting help 
 
-CTO.ai AWS-ECS-Fargate Kubernetes Workflow is an open source project and is supported by the community. You can buy a supported version of CTO AWS-ECS Fargate at CTO.ai
+CTO.ai AWS-ECS-Fargate Kubernetes Workflow is an open-source project and is supported by the community. You can buy a supported version of CTO AWS-ECS Fargate at CTO.ai
 
 Learn more about CTO.ai community support channels [here](https://cto.ai/community)
 
