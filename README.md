@@ -39,5 +39,5 @@ A PaaS like workflow for AWS ECS Fargate Infastructure as Code, powered by CTO.a
 - [37:20](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Monitoring deployment in ECS Console 
 - [38:44](https://www.loom.com/share/b4b45f1030fb429888e2059a34ed56f0) - Monitoring & Searching container logs
 
-_note: you'll have to select the timestamp, on loom.com_
+_note: you'll have to select the timestamp on loom.com_
 
