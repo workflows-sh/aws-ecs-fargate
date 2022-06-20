@@ -125,7 +125,7 @@ Learn more about CTO.ai community support channels [here](https://cto.ai/communi
 
 Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
 
-Kindly check our [Contributing guide](https://github.com/workflows-sh/aws-ecs-fargate/blob/documentation/Contributing.md) on how to propose bugfixes and improvements, and submitting pull requests to the project.
+Kindly check our [Contributing guide](https://github.com/workflows-sh/aws-ecs-fargate/blob/main/Contributing.md) on how to propose bugfixes and improvements, and submitting pull requests to the project.
 
 
 - View issues related to this image in our [GitHub repository issues tracker](https://github.com/workflows-sh/aws-ecs-fargate/issues)
@@ -148,4 +148,4 @@ Check out our [FAQ](https://cto.ai/docs/faq), send us an [email](https://cto.ai/
 
 Distributed under MIT License (`The MIT License`).
 
-See [LICENSE](https://github.com/workflows-sh/aws-ecs-fargate/blob/documentation/License) for more information.
+See [LICENSE](License) for more information.
