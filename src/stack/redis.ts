@@ -22,7 +22,15 @@ class RedisCluster extends cdk.Construct {
     });
 
     // The security group that defines network level access to the cluster
-    const securityGroup = new ec2.SecurityGroup(this, `${id}-security-group`, { vpc: targetVpc });
+    const securityGroup = new ec2.SecurityGroup(this, `${id}-security-group`, { 
+      vpc: targetVpc, 
+    });
+
+    securityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.allTraffic(),
+      'Allow all connections to redis from inside the VPC'
+    );
 
     // The cluster resource itself.
     this.cluster = new elasticache.CfnCacheCluster(this, `${id}-cluster`, {
