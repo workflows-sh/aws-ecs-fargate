@@ -9,6 +9,7 @@ import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as sqs from '@aws-cdk/aws-sqs';
 import * as elasticache from './redis'
+import * as autoscaling from '@aws-cdk/aws-autoscaling';
 
 import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
 
@@ -128,6 +129,7 @@ export default class Service extends cdk.Stack {
       DB_HOST: CLUSTER_VAULT.secretValueFromJson('host').toString(),
       DB_PORT: CLUSTER_VAULT.secretValueFromJson('port').toString(),
       DB_USER: CLUSTER_VAULT.secretValueFromJson('username').toString(),
+      DB_PASS: CLUSTER_VAULT.secretValueFromJson('password').toString(),
       REDIS_HOST: this.redis?.cluster?.attrRedisEndpointAddress,
       REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
       MQ_URL: this.mq?.queueUrl,
@@ -159,6 +161,21 @@ export default class Service extends cdk.Stack {
       targetUtilizationPercent: 50,
       scaleInCooldown: cdk.Duration.seconds(60),
       scaleOutCooldown: cdk.Duration.seconds(60)
+    })
+    scaling.scaleOnMemoryUtilization('MemoryScaling', {
+      targetUtilizationPercent: 50,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60)
+    })
+
+    scaling.scaleOnSchedule('DaytimeScaleDown', {
+      schedule: autoscaling.Schedule.expression('cron(0 23 ? * MON-FRI *)'),
+      minCapacity: 1,
+    })
+
+    scaling.scaleOnSchedule('DaytimeScaleUp', {
+      schedule: autoscaling.Schedule.expression('cron(0 8 ? * MON-FRI *)'),
+      minCapacity: 3,
     })
 
     this.URL = fargateService.loadBalancer.loadBalancerDnsName
