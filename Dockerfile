@@ -2,6 +2,9 @@
 # Final container
 ############################
 FROM registry.cto.ai/official_images/node:2-12.13.1-stretch-slim
+RUN mkdir -p /usr/local/nvm
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 14.18.3
 
 RUN apt-get update && \
     apt-get install -y \
@@ -14,10 +17,21 @@ RUN apt-get update && \
     && pip3 install --upgrade pip \
     && apt-get clean
 
+
+RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
+RUN . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
+
+
 RUN pip3 --no-cache-dir install --upgrade awscli
 
 RUN curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
 RUN dpkg -i session-manager-plugin.deb
+
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 #USER ops
 WORKDIR /ops
