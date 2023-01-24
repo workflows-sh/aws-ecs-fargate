@@ -22,6 +22,7 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Run Pipelines](#run-pipelines)
     - [Set up your Infrastructure](#set-up-your-infrastructure)
     - [Build and Publish Services](#build-and-publish-services)
+    - [Publish Services](#publish-services)
     - [Trigger your Pipelines and Services](#trigger-your-pipelines-and-services)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
@@ -91,19 +92,19 @@ Next, set up your AWS infrastructure to build, and run your AWS-ECS-Fargate work
 
 - [Check out the documentation to learn more.](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
 
-
 ---
 
 ### Build and Publish Services 
 
-- [Build Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
+After building pipelines and setting up your infrastructure, you can enable service previews on your application by building your services using `ops build .`
 
+- [Learn more on building services](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
 
-- [Publish Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#publish-services-locally-with-the-ctoai-cli)
+### Publish Services 
 
+Next, publish your service workflow using `ops publish .` to run your microservice web application over HTTP. 
 
 ---
-
 
 ### Trigger your Pipelines and Services
 
