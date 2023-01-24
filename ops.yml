@@ -177,7 +177,7 @@ services:
     run: node sample-app/app.js
     # specify port
     port: [ '8080:8080' ]
-    # configure domain and dns
+    # configure domain and dns based on your project name
     domain: ""
     env:
     # add database hosts, port and user
