@@ -127,9 +127,7 @@ Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
 
 Kindly check our [Contributing guide](https://github.com/workflows-sh/aws-ecs-fargate/blob/main/Contributing.md) on how to propose bugfixes and improvements, and submitting pull requests to the project.
 
-
 - View issues related to this image in our [GitHub repository issues tracker](https://github.com/workflows-sh/aws-ecs-fargate/issues)
-
 
 ## Learn more 
 
