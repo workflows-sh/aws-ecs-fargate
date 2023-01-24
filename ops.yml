@@ -115,7 +115,8 @@ commands:
         list: 'list keys in the environment vault'
         remove: ' remove a specific key in the environment vault'
         destroy: 'destroy the environment vault'
-        
+
+
 # Build aws ecs fargate ci/cd pipelines
 pipelines:
   - name: sample-app-pipeline:0.2.0
@@ -169,8 +170,8 @@ pipelines:
           # push docker images to container registry
           - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.$AWS_REGION.amazonaws.com/sample-app-$STACK_TYPE:$REF
 
-services:
 # preview changes to your app in a live deployment
+services:
   - name: sample-app:0.1.0
     description: preview of sample app
     run: node sample-app/app.js
@@ -197,4 +198,3 @@ services:
      - build
      - publish
      - start
-
