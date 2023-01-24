@@ -18,7 +18,9 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Create Secrets from Settings](#create-secrets-from-settings)
     - [Create your Sample - App](#create-your-sample---app)
   - [Usage](#usage)
-    - [Build and Publish Pipelines](#build-and-publish-pipelines)
+    - [Build Pipelines](#build-pipelines)
+    - [Run Pipelines](#run-pipelines)
+    - [Set up your Infrastructure](#set-up-your-infrastructure)
     - [Build and Publish Services](#build-and-publish-services)
     - [Trigger your Pipelines and Services](#trigger-your-pipelines-and-services)
   - [Getting help](#getting-help)
@@ -44,8 +46,7 @@ You can run and deploy the AWS-ECS-Fargate Workflow directly on our [Platform](h
 
 ## Latest Version 
 
-The AWS - ECS Fargate Workflow is running on the latest version
-
+The AWS - ECS Fargate Workflow is running on the latest version.
 
 ## Getting Started 
 
@@ -68,23 +69,27 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 [You need to build and run your Sample-app](https://cto.ai/docs/aws-ecs-fargate#ecs---fargate-demo). Your sample App can be a Node.js HTTP server with a Dockerfile and `ops.yml` file.
 
 ---
-
 ## Usage 
 
-Follow the following steps below to configure and deploy your AWS - ECS Fargate Workflow
+Follow the following steps below to configure and deploy your AWS - ECS Fargate Workflow using the **Ops CLI** commands. 
 
-### Build and Publish Pipelines 
+### Build Pipelines 
 
-- [Build Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
+In your application, build your Docker image, from your Dockerfile, and your `ops.yml` file located in the specified path you created in your source directory using the `ops build .` command.
 
+- [Check out the documentation to learn more on building pipelines](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
 
-- [Run Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#run-pipelines-locally-with-the-ctoai-cli)
+### Run Pipelines
 
+Next, create the running containers from the image, and start it using `ops run .`
 
-- [Set up your Infrastructure](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
+- [Learn more about running pipelines](https://cto.ai/docs/aws-ecs-fargate#run-pipelines-locally-with-the-ctoai-cli)
 
+### Set up your Infrastructure 
 
-- [Publish Pipelines locally with the workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
+Next, set up your AWS infrastructure to build, and run your AWS-ECS-Fargate workflow using the `ops run -b .` the command will provision your AWS ECS and Fargate stack using CloudFormation.
+
+- [Check out the documentation to learn more.](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
 
 
 ---
@@ -144,7 +149,7 @@ Check out our [FAQ](https://cto.ai/docs/faq), send us an [email](https://cto.ai/
 
 ## License 
 
-&copy; CTO.ai, Inc., 2022
+&copy; CTO.ai, Inc., 2023
 
 Distributed under MIT License (`The MIT License`).
 
