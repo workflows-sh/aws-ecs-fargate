@@ -108,13 +108,7 @@ Next, publish your service workflow using `ops publish .` to run your microservi
 
 ### Trigger your Pipelines and Services
 
-When you are done building and publishing your Pipelines and Services, you can trigger them using **Event Triggers** 
-
-
-- [Trigger your Pipelines using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-pipelines-using-events)
-
-
-- [Trigger your Services using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-services-using-events)
+When you are done building and publishing your Pipelines and Services, you can trigger them using [GitHub Event Triggers](https://cto.ai/docs/how-to-use-events#supported-event-triggers). Trigger your [pipelines](https://cto.ai/docs/aws-ecs-fargate#trigger-pipelines-using-events) and [services](https://cto.ai/docs/aws-ecs-fargate#trigger-services-using-events) using event triggers like `pull_request_merged` `create.tag`
 
 ---
 
