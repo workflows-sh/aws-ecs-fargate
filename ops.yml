@@ -115,6 +115,7 @@ commands:
         list: 'list keys in the environment vault'
         remove: ' remove a specific key in the environment vault'
         destroy: 'destroy the environment vault'
+        
 # Build aws ecs fargate ci/cd pipelines
 pipelines:
   - name: sample-app-pipeline:0.2.0
