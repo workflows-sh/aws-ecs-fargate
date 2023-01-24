@@ -144,7 +144,7 @@ Check out our [FAQ](https://cto.ai/docs/faq), send us an [email](https://cto.ai/
 
 ## License 
 
-&copy; CTO.ai, Inc., 2022
+&copy; CTO.ai, Inc., 2023
 
 Distributed under MIT License (`The MIT License`).
 
