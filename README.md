@@ -18,8 +18,11 @@ This repo includes a complete AWS - ECS fargate Infrastructure stack that enable
     - [Create Secrets from Settings](#create-secrets-from-settings)
     - [Create your Sample - App](#create-your-sample---app)
   - [Usage](#usage)
-    - [Build and Publish Pipelines](#build-and-publish-pipelines)
+    - [Build Pipelines](#build-pipelines)
+    - [Run Pipelines](#run-pipelines)
+    - [Set up your Infrastructure](#set-up-your-infrastructure)
     - [Build and Publish Services](#build-and-publish-services)
+    - [Publish Services](#publish-services)
     - [Trigger your Pipelines and Services](#trigger-your-pipelines-and-services)
   - [Getting help](#getting-help)
   - [Reporting bugs and Contributing](#reporting-bugs-and-contributing)
@@ -44,8 +47,7 @@ You can run and deploy the AWS-ECS-Fargate Workflow directly on our [Platform](h
 
 ## Latest Version 
 
-The AWS - ECS Fargate Workflow is running on the latest version
-
+The AWS - ECS Fargate Workflow is running on the latest version.
 
 ## Getting Started 
 
@@ -68,47 +70,45 @@ Secrets are encrypted environment variables that CTO.ai utilizes within your wor
 [You need to build and run your Sample-app](https://cto.ai/docs/aws-ecs-fargate#ecs---fargate-demo). Your sample App can be a Node.js HTTP server with a Dockerfile and `ops.yml` file.
 
 ---
-
 ## Usage 
 
-Follow the following steps below to configure and deploy your AWS - ECS Fargate Workflow
+Follow the following steps below to configure and deploy your AWS - ECS Fargate Workflow using the **Ops CLI** commands. 
 
-### Build and Publish Pipelines 
+### Build Pipelines 
 
-- [Build Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
+In your application, build your Docker image, from your Dockerfile, and your `ops.yml` file located in the specified path you created in your source directory using the `ops build .` command.
 
+- [Check out the documentation to learn more on building pipelines](https://cto.ai/docs/aws-ecs-fargate#ecs--fargate-workflow-pipelines)
 
-- [Run Pipelines locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#run-pipelines-locally-with-the-ctoai-cli)
+### Run Pipelines
 
+Next, create the running containers from the image, and start it using `ops run .`
 
-- [Set up your Infrastructure](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
+- [Learn more about running pipelines](https://cto.ai/docs/aws-ecs-fargate#run-pipelines-locally-with-the-ctoai-cli)
 
+### Set up your Infrastructure 
 
-- [Publish Pipelines locally with the workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build--publish-pipelines-locally-with-the-ctoai-cli)
+Next, set up your AWS infrastructure to build, and run your AWS-ECS-Fargate workflow using the `ops run -b .` the command will provision your AWS ECS and Fargate stack using CloudFormation.
 
+- [Check out the documentation to learn more.](https://cto.ai/docs/aws-ecs-fargate#run-and-set-up-your-infrastructure)
 
 ---
 
 ### Build and Publish Services 
 
-- [Build Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
+After building pipelines and setting up your infrastructure, you can enable service previews on your application by building your services using `ops build .`
 
+- [Learn more on building services](https://cto.ai/docs/aws-ecs-fargate#build-services-locally-with-the-ctoai-cli)
 
-- [Publish Services locally with the Workflow CLI](https://cto.ai/docs/aws-ecs-fargate#publish-services-locally-with-the-ctoai-cli)
+### Publish Services 
 
+Next, publish your service workflow using `ops publish .` to run your microservice web application over HTTP. 
 
 ---
 
-
 ### Trigger your Pipelines and Services
 
-When you are done building and publishing your Pipelines and Services, you can trigger them using **Event Triggers** 
-
-
-- [Trigger your Pipelines using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-pipelines-using-events)
-
-
-- [Trigger your Services using Events](https://cto.ai/docs/aws-ecs-fargate#trigger-services-using-events)
+When you are done building and publishing your Pipelines and Services, you can trigger them using [GitHub Event Triggers](https://cto.ai/docs/how-to-use-events#supported-event-triggers). Trigger your [pipelines](https://cto.ai/docs/aws-ecs-fargate#trigger-pipelines-using-events) and [services](https://cto.ai/docs/aws-ecs-fargate#trigger-services-using-events) using event triggers like `pull_request_merged` `create.tag`
 
 ---
 
@@ -127,9 +127,7 @@ Feel free to submit PRs or to fill issues. Every kind of help is appreciated.
 
 Kindly check our [Contributing guide](https://github.com/workflows-sh/aws-ecs-fargate/blob/main/Contributing.md) on how to propose bugfixes and improvements, and submitting pull requests to the project.
 
-
 - View issues related to this image in our [GitHub repository issues tracker](https://github.com/workflows-sh/aws-ecs-fargate/issues)
-
 
 ## Learn more 
 
