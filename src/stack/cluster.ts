@@ -78,7 +78,8 @@ export default class Cluster extends cdk.Stack {
     });
 
     const cluster = new ecs.Cluster(this, `${this.id}-ecs`, { 
-      vpc: vpc
+      vpc: vpc,
+      containerInsights: true
     });
 
     const dbSecurityGroup = new ec2.SecurityGroup(this, `${this.id}-db-sg`, {
