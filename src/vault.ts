@@ -213,7 +213,7 @@ async function destroy() {
 
 }
 
-switch(ARGS[1]) {
+switch(ARGS[0]) {
 
   case "init":
 
