@@ -63,8 +63,7 @@ async function run() {
   await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
-  // await exec(`npx aws-cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
-  await exec(`npx aws-cdk diff ${STACKS[STACK_ENV].join(' ')}`, {
+  await exec(`npx aws-cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,
@@ -78,11 +77,11 @@ async function run() {
 
     try {
 
-      // const json = await fs.readFileSync('./outputs.json', 'utf8')
-      // const outputs = JSON.parse(json)
+      const json = await fs.readFileSync('./outputs.json', 'utf8')
+      const outputs = JSON.parse(json)
 
       const STATE_CONFIG_KEY = `${STACK_ENV}_${STACK_TYPE}_STATE`.toUpperCase().replace(/-/g,'_')
-      // sdk.setConfig(STATE_CONFIG_KEY, JSON.stringify(outputs))
+      sdk.setConfig(STATE_CONFIG_KEY, JSON.stringify(outputs))
 
       sdk.track([], {
         event_name: 'deployment',
