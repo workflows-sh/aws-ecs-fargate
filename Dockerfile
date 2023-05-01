@@ -13,7 +13,7 @@ RUN apt-get update && \
         python3-setuptools \
         groff \
         less \
-        mysql-client \
+        mariadb-client \
     && pip3 install --upgrade pip \
     && apt-get clean
 RUN curl --silent -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash

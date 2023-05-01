@@ -1,8 +1,7 @@
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import Cluster from './cluster'
 import Service from './service'
 import Registry from './registry'
-import * as rds from '@aws-cdk/aws-rds';
 
 interface StackProps {
   org: string

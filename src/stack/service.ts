@@ -1,17 +1,18 @@
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecr from '@aws-cdk/aws-ecr'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as rds from '@aws-cdk/aws-rds';
-import * as sm from "@aws-cdk/aws-secretsmanager";
-import * as s3 from '@aws-cdk/aws-s3';
-import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
-import * as sqs from '@aws-cdk/aws-sqs';
+import * as cdk from 'aws-cdk-lib'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as ecr from 'aws-cdk-lib/aws-ecr'
+import * as ecs from 'aws-cdk-lib/aws-ecs'
+import * as rds from 'aws-cdk-lib/aws-rds';
+import * as sm from "aws-cdk-lib/aws-secretsmanager";
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3Deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as elasticache from './redis'
-import * as autoscaling from '@aws-cdk/aws-autoscaling';
+import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
+import { Construct } from 'constructs';
 
-import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
+import ecsPatterns = require('aws-cdk-lib/aws-ecs-patterns')
 
 import util from 'util';
 import { exec as oexec } from 'child_process';
@@ -51,7 +52,7 @@ export default class Service extends cdk.Stack {
 
   public URL: string
 
-  constructor(scope: cdk.Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id)
 
     if(!props?.cluster) {
@@ -114,7 +115,7 @@ export default class Service extends cdk.Stack {
 
     const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
     const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
-      secretArn: this.db?.secret?.secretArn
+      secretCompleteArn: this.db?.secret?.secretArn
     })
 
     let service_secrets = {}

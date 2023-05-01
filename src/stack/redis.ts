@@ -1,14 +1,15 @@
-import * as cdk from '@aws-cdk/core';
-import * as elasticache from '@aws-cdk/aws-elasticache';
-import * as ec2 from '@aws-cdk/aws-ec2';
+import * as cdk from 'aws-cdk-lib';
+import * as elasticache from 'aws-cdk-lib/aws-elasticache';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import { Construct } from 'constructs';
 
 interface StackProps {
   vpc: ec2.Vpc
 }
 
-class RedisCluster extends cdk.Construct {
+class RedisCluster extends Construct {
   public readonly cluster: elasticache.CfnCacheCluster
-  constructor(scope: cdk.Construct, id:string, props:StackProps) {
+  constructor(scope: Construct, id:string, props:StackProps) {
     super(scope, id);
 
     const targetVpc = props.vpc;

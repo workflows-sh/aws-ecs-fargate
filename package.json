@@ -20,19 +20,11 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@aws-cdk/aws-cloudfront": "1.169.0",
-    "@aws-cdk/aws-ec2": "1.169.0",
-    "@aws-cdk/aws-ecr": "1.169.0",
-    "@aws-cdk/aws-ecs": "1.169.0",
-    "@aws-cdk/aws-ecs-patterns": "1.169.0",
-    "@aws-cdk/aws-elasticache": "1.169.0",
-    "@aws-cdk/aws-rds": "1.169.0",
-    "@aws-cdk/aws-s3": "1.169.0",
-    "@aws-cdk/aws-s3-deployment": "1.169.0",
-    "@aws-cdk/core": "1.169.0",
     "@cto.ai/sdk": "^2.4.3",
-    "aws-cdk": "^2.10.0",
+    "aws-cdk": "2.77",
+    "aws-cdk-lib": "2.77.0",
     "commonjs": "^0.0.1",
+    "constructs": "^10.0.5",
     "express": "^4.17.1",
     "simple-argv": "^2.0.4",
     "source-map-support": "^0.5.19"

@@ -1,9 +1,10 @@
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as rds from '@aws-cdk/aws-rds'
-import * as sqs from '@aws-cdk/aws-sqs'
+import * as cdk from 'aws-cdk-lib'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as ecs from 'aws-cdk-lib/aws-ecs'
+import * as rds from 'aws-cdk-lib/aws-rds'
+import * as sqs from 'aws-cdk-lib/aws-sqs'
 import * as elasticache from './redis'
+import { Construct } from 'constructs';
 
 interface StackProps {
   org: string
@@ -28,10 +29,10 @@ export default class Cluster extends cdk.Stack {
   public readonly cluster: ecs.Cluster
   public readonly db: rds.ServerlessCluster
   public readonly mq: sqs.Queue
-  public readonly redis: cdk.Construct
+  public readonly redis: Construct
   public readonly bastion: ec2.BastionHostLinux
 
-  constructor(scope: cdk.Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id)
     this.id = id
     this.org = props?.org ?? 'cto-ai'
@@ -54,7 +55,7 @@ export default class Cluster extends cdk.Stack {
         },
         {
           name: 'Private',
-          subnetType: ec2.SubnetType.PRIVATE,
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
           cidrMask: 24,
         }
       ],
@@ -95,7 +96,7 @@ export default class Cluster extends cdk.Stack {
       defaultDatabaseName: `${this.env}`,
       engine: rds.DatabaseClusterEngine.AURORA_MYSQL,
       scaling: { autoPause: cdk.Duration.seconds(0) },
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE },
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
       securityGroups: [dbSecurityGroup],
       credentials: rds.Credentials.fromGeneratedSecret('root')
     });
