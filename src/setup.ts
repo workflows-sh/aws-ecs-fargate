@@ -60,9 +60,9 @@ async function run() {
   }
 
   sdk.log(`\n📦 Setting up the ${ux.colors.white(STACK_TYPE)} ${ux.colors.white(STACK_ENV)} stack for ${ux.colors.white(STACK_TEAM)} team...`)
-  await exec(`./node_modules/.bin/cdk bootstrap`, { env: process.env })
+  await exec(`npx aws-cdk bootstrap`, { env: process.env })
 
-  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+  await exec(`npx aws-cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,
