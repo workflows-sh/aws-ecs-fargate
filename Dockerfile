@@ -1,10 +1,10 @@
 ############################
 # Final container
 ############################
-FROM registry.cto.ai/official_images/node:2-12.13.1-stretch-slim
+FROM registry.cto.ai/official_images/node:2.7.4-12.13.1-buster-slim
 RUN mkdir -p /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 14.18.3
+ENV NODE_VERSION 16.19.1
 
 RUN apt-get update && \
     apt-get install -y \
@@ -13,7 +13,6 @@ RUN apt-get update && \
         python3-setuptools \
         groff \
         less \
-        mysql-client \
     && pip3 install --upgrade pip \
     && apt-get clean
 
@@ -33,7 +32,7 @@ RUN dpkg -i session-manager-plugin.deb
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-#USER ops
+USER ops
 WORKDIR /ops
 
 ADD --chown=ops:9999 package.json .
@@ -41,5 +40,3 @@ RUN npm install --loglevel=error
 
 ADD --chown=ops:9999 . .
 
-RUN apt install -y procps lsof telnet
-EXPOSE 3306
