@@ -21,7 +21,7 @@ async function run() {
   }>({
       type: 'input',
       name: 'STACK_REPO',
-      default: 'sample-app',
+      default: 'sample-expressjs-aws-ecs-fargate',
       message: 'What is the name of the application repo you want to destroy?'
     })
 

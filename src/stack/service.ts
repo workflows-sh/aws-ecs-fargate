@@ -4,11 +4,7 @@ import * as ecr from '@aws-cdk/aws-ecr'
 import * as ecs from '@aws-cdk/aws-ecs'
 import * as rds from '@aws-cdk/aws-rds';
 import * as sm from "@aws-cdk/aws-secretsmanager";
-import * as s3 from '@aws-cdk/aws-s3';
-import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as sqs from '@aws-cdk/aws-sqs';
-import * as elasticache from './redis'
 import * as autoscaling from '@aws-cdk/aws-autoscaling';
 
 import ecsPatterns = require('@aws-cdk/aws-ecs-patterns')
@@ -74,7 +70,7 @@ export default class Service extends cdk.Stack {
     this.org = props?.org ?? 'cto-ai'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
-    this.repo = props?.repo ?? 'sample-app'
+    this.repo = props?.repo ?? 'sample-expressjs-aws-ecs-fargate'
     this.tag = props?.tag ?? 'main'
     this.entropy = props?.entropy ?? '01012022'
 
@@ -87,30 +83,6 @@ export default class Service extends cdk.Stack {
 
   async initialize() {
 
-    // S3
-    const bucket = new s3.Bucket(this, `${this.repo}-${this.key}-bucket`, {
-      publicReadAccess: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      websiteIndexDocument: "index.html"
-    })
-
-    // We can enable deployment from the local system using this
-    const src = new s3Deploy.BucketDeployment(this, `${this.repo}-${this.key}-deployment`, {
-      sources: [s3Deploy.Source.asset("./sample-app/dist")],
-      destinationBucket: bucket
-    })
-
-    // Cloudfront
-    const cf = new cloudfront.CloudFrontWebDistribution(this, `${this.repo}-${this.key}-cloudfront`, {
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: bucket
-          },
-          behaviors: [{isDefaultBehavior: true}]
-        },
-      ]
-    })
 
     const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
     const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
@@ -134,7 +106,6 @@ export default class Service extends cdk.Stack {
       REDIS_PORT: this.redis?.cluster?.attrRedisEndpointPort,
       MQ_URL: this.mq?.queueUrl,
       MQ_NAME: this.mq?.queueName,
-      CDN_URL: cf.distributionDomainName
     }, { ...service_secrets })
 
     // get env vars that can be used to update container runtime task definition
@@ -175,7 +146,7 @@ export default class Service extends cdk.Stack {
 
     scaling.scaleOnSchedule('DaytimeScaleUp', {
       schedule: autoscaling.Schedule.expression('cron(0 8 ? * MON-FRI *)'),
-      minCapacity: 3,
+      minCapacity: 1,
     })
 
     this.URL = fargateService.loadBalancer.loadBalancerDnsName
