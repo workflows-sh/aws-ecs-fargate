@@ -84,10 +84,9 @@ export default class Service extends cdk.Stack {
 
   async initialize() {
 
-
     const SERVICE_VAULT_KEY = `${this.env}_${this.key}_SERVICE_VAULT_ARN`.replace(/-/g,'_').toUpperCase()
     const CLUSTER_VAULT = sm.Secret.fromSecretAttributes(this, `${this.repo}-${this.key}-db-secrets`, {
-      secretCompleteArn: this.db?.secret?.secretArn
+      secretArn: this.db?.secret?.secretArn
     } as sm.SecretAttributes)
 
     let service_secrets = {}
