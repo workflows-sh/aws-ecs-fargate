@@ -26,7 +26,7 @@ async function run() {
   }>({
       type: 'input',
       name: 'STACK_REPO',
-      default: 'sample-app',
+      default: 'sample-expressjs-aws-ecs-fargate',
       message: 'What is the name of the application repo?'
     })
 
@@ -63,7 +63,7 @@ async function run() {
   await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
-  await exec(`npx aws-cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,

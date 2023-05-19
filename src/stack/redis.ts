@@ -23,8 +23,8 @@ class RedisCluster extends Construct {
     });
 
     // The security group that defines network level access to the cluster
-    const securityGroup = new ec2.SecurityGroup(this, `${id}-security-group`, { 
-      vpc: targetVpc, 
+    const securityGroup = new ec2.SecurityGroup(this, `${id}-security-group`, {
+      vpc: targetVpc
     });
 
     securityGroup.addIngressRule(
@@ -34,9 +34,9 @@ class RedisCluster extends Construct {
     );
 
     // The cluster resource itself.
-    this.cluster = new elasticache.CfnCacheCluster(this, `${id}-cluster`, {
-      cacheNodeType: 'cache.t2.micro',
-      engine: 'redis',
+    this.cluster = new elasticache.CfnCacheCluster(this, `${id}-cluster`,
+      cacheNodeType: 'cache.t2.micro'
+      engine: 'redis'
       numCacheNodes: 1,
       autoMinorVersionUpgrade: true,
       cacheSubnetGroupName: subnetGroup.ref,

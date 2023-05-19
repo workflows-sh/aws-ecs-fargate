@@ -38,7 +38,7 @@ export default class Cluster extends cdk.Stack {
     this.org = props?.org ?? 'cto-ai'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
-    this.repo = props?.repo ?? 'sample-app'
+    this.repo = props?.repo ?? 'sample-expressjs-aws-ecs-fargate'
     this.tag = props?.tag ?? 'main'
     this.entropy = props?.entropy ?? '01012022'
 
@@ -55,7 +55,7 @@ export default class Cluster extends cdk.Stack {
         },
         {
           name: 'Private',
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
           cidrMask: 24,
         }
       ],
@@ -96,7 +96,7 @@ export default class Cluster extends cdk.Stack {
       defaultDatabaseName: `${this.env}`,
       engine: rds.DatabaseClusterEngine.AURORA_MYSQL,
       scaling: { autoPause: cdk.Duration.seconds(0) },
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroups: [dbSecurityGroup],
       credentials: rds.Credentials.fromGeneratedSecret('root')
     });

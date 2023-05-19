@@ -25,7 +25,7 @@ export class Stack{
     this.org = props?.org ?? 'cto-ai'
     this.env = props?.env ?? 'dev'
     this.key = props?.key ?? 'aws-ecs-fargate'
-    this.repo = props?.repo ?? 'sample-app'
+    this.repo = props?.repo ?? 'sample-expressjs-aws-ecs-fargate'
     this.tag = props?.tag ?? 'main'
     this.entropy = props?.entropy ?? '01012022'
   }

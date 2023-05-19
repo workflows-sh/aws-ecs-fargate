@@ -21,7 +21,7 @@ async function run() {
   }>({
       type: 'input',
       name: 'STACK_REPO',
-      default: 'sample-app',
+      default: 'sample-expressjs-aws-ecs-fargate',
       message: 'What is the name of the application repo you want to destroy?'
     })
 
@@ -75,7 +75,7 @@ async function run() {
   await ux.print(`👉 ${ux.colors.green('So...')} This may require you to go to the AWS Console to delete these resources and re-run this workflow once per service to fully destroy the stack.`)
   console.log('')
 
-  const deploy = exec(`npx aws-cdk destroy -f -e true ${STACKS[STACK_ENV].reverse().join(' ')}`, {
+  const deploy = exec(`./node_modules/.bin/cdk destroy -f -e true ${STACKS[STACK_ENV].reverse().join(' ')}`, {
     env: { 
       ...process.env, 
       STACK_TYPE: STACK_TYPE, 
