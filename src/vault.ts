@@ -6,7 +6,9 @@ const pexec = util.promisify(oexec);
 
 const slice = process.argv[2] === '.' ? 3 : 2
 const ARGS = process.argv.slice(slice);
-const OPTIONS = require('simple-argv')
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const OPTIONS = yargs(hideBin(process.argv)).argv
 
 async function init() {
 
