@@ -1,5 +1,6 @@
-import cdk = require('@aws-cdk/core')
-import ecr = require('@aws-cdk/aws-ecr')
+import cdk = require('aws-cdk-lib')
+import ecr = require('aws-cdk-lib/aws-ecr')
+import { Construct } from 'constructs';
 
 interface StackProps {
   org: string
@@ -22,7 +23,7 @@ export default class Registry extends cdk.Stack {
 
   public readonly repository: ecr.Repository
 
-  constructor(scope: cdk.Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id)
     this.id = id
     this.org = props?.org ?? 'cto-ai'
