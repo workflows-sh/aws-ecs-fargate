@@ -1,43 +1,71 @@
 import fs from 'fs'
 import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
-import { exec as oexec } from 'child_process';
+import { exec as oexec, execSync } from 'child_process';
 const pexec = util.promisify(oexec);
-
+const ARGS = require('minimist')(process.argv.slice(2));
+import { stackEnvPrompt, stackRepoPrompt, stackTagPrompt } from './prompts';
 
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
   const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
 
-  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { STACK_REPO } = await stackRepoPrompt()
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
+  const ecrRepoName: string = `${STACK_REPO}-${STACK_TYPE}`
+
+  await ux.print(`\n🛠 Loading the latest tags for ${ux.colors.green(STACK_TYPE)} environment and ${ux.colors.green(STACK_REPO)} service...`)
+
+  async function retrieveCurrentlyDeployedImage(env: string, service: string): Promise<string> {
+    const ecsClusters: string[] = JSON.parse(execSync(
+      `aws ecs list-clusters --query "clusterArns[*]" --region $AWS_REGION`,
+      {
+        env: process.env
+      }
+    ).toString()) || []
+
+    let ecsCluster: string = ""
+
+    ecsClusters.forEach((clusterName: string) => {
+      const re = new RegExp(`cluster\/${env}`)
+      if (re.test(clusterName)) {
+        ecsCluster = clusterName
+      }
     })
 
-  const { STACK_REPO } = await ux.prompt<{
-    STACK_REPO: string
-  }>({
-      type: 'input',
-      name: 'STACK_REPO',
-      default: 'sample-expressjs-aws-ecs-fargate',
-      message: 'What is the name of the application repo?'
-    })
+    if (ecsCluster) {
+      const ecsTask: string = execSync(
+        `aws ecs list-tasks --cluster ${ecsCluster} --service-name ${service} --query "taskArns[0]" --region $AWS_REGION`,
+        {
+          env: process.env
+        }
+      ).toString().trim()
 
-  const { STACK_TAG } = await ux.prompt<{
-    STACK_TAG: string
-  }>({
-      type: 'input',
-      name: 'STACK_TAG',
-      default: 'main',
-      message: 'What is the name of the tag or branch?'
-    })
+      if (ecsTask) {
+        const image: string = execSync(
+          `aws ecs describe-tasks --region $AWS_REGION --query=tasks[0].containers[0].image --cluster ${ecsCluster} --tasks ${ecsTask}`,
+          {
+            env: process.env
+          }
+        ).toString().trim()
+  
+        if (image) {
+          return image.replace(/.+:/, '').replace(/"/, '')
+        }
+      }
+    }
+
+    return ""
+  }
+
+  const ecrImages: string[] = JSON.parse(execSync(
+    `aws ecr describe-images --region=$AWS_REGION --repository-name ${ecrRepoName} --query "reverse(sort_by(imageDetails,& imagePushedAt))[*].imageTags[0]"`,
+    {
+      env: process.env
+    }
+  ).toString().trim()) || []
 
   const STACKS:any = {
     'dev': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
@@ -63,7 +91,7 @@ async function run() {
   await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
-  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+  await exec(`./node_modules/.bin/cdk diff ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,
