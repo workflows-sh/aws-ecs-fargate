@@ -91,7 +91,7 @@ async function run() {
   await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
-  await exec(`./node_modules/.bin/cdk diff ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,
