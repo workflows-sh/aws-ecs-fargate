@@ -6,8 +6,8 @@ export function stackEnvPrompt () {
     } > ({
         type: 'list',
         name: 'STACK_ENV',
-        choices: ['stg', 'sbx', 'pre', 'prd'],
-        default: 'stg',
+        choices: ['dev', 'stg', 'prd'],
+        default: 'dev',
         message: 'What is the name of the environment?',
     })
 }
@@ -18,10 +18,9 @@ export function stackRepoPrompt () {
     } > ({
         type: 'list',
         name: 'STACK_REPO',
-        choices: [''],
-        default: 'changeme',
+        choices: ['sample-expressjs-aws-ecs-fargate'],
+        default: 'sample-expressjs-aws-ecs-fargate',
         message: 'What is the name of the application repo?',
-        allowEmpty: false
     })
 }
 

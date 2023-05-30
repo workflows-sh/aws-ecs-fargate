@@ -67,6 +67,39 @@ async function run() {
     }
   ).toString().trim()) || []
 
+  const currentImage = await retrieveCurrentlyDeployedImage(STACK_ENV, STACK_REPO)
+  await ux.print(`\n🖼️  Currently deployed image - ${ux.colors.green(currentImage)}\n`)
+
+  const defaultImage = ecrImages.length ? ecrImages[0] : undefined
+  const imageTagLimit = 20
+  let { STACK_TAG }: any = ''
+  
+  const { STACK_TAG_CUSTOM } = await ux.prompt<{
+    STACK_TAG_CUSTOM: boolean
+  }>({
+    type: 'confirm',
+    name: 'STACK_TAG_CUSTOM',
+    default: false,
+    message: 'Do you want to deploy a custom image?'
+  });
+
+  if (STACK_TAG_CUSTOM){
+    ({ STACK_TAG } = await ux.prompt<{
+      STACK_TAG: string
+    }>({
+      type: 'input',
+      name: 'STACK_TAG',
+      message: 'What is the name of the tag or branch?',
+      allowEmpty: false
+    }))
+  } else {
+    ({ STACK_TAG } = await stackTagPrompt(
+      ecrImages.slice(0, ecrImages.length < imageTagLimit ? ecrImages.length : imageTagLimit), 
+      currentImage || defaultImage
+    ))
+  }
+  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
+
   const STACKS:any = {
     'dev': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
     'stg': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
