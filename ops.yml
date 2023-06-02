@@ -96,7 +96,7 @@ commands:
         - AWS_SECRET_ACCESS_KEY
         - AWS_ACCOUNT_NUMBER
     # manage and lock secrets vault
-  - name: vault-aws-ecs-fargate:0.1.1
+  - name: vault-aws-ecs-fargate:0.1.2
     run: ./node_modules/.bin/ts-node /ops/src/vault.ts
     description: "manage secrets vault"
     env:
