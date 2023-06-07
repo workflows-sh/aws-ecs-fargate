@@ -62,7 +62,7 @@ async function run() {
   sdk.log(`\n📦 Setting up the ${ux.colors.white(STACK_TYPE)} ${ux.colors.white(STACK_ENV)} stack for ${ux.colors.white(STACK_TEAM)} team...`)
   await exec(`./node_modules/.bin/cdk bootstrap`, { env: process.env })
 
-  await exec(`./node_modules/.bin/cdk diff ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
     env: { 
       ...process.env, 
       STACK_ENV: STACK_ENV,
@@ -105,4 +105,19 @@ async function exec(cmd, env?: any | null) {
   })
 }
 
-run()
+// Run the main function only if the AWS Creds are set.
+(async () => {
+  try {
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  
+    if (accessKeyId && secretAccessKey) {
+      console.log('AWS credentials are set.');
+      run()
+    } else {
+      console.log('AWS credentials are not set.');
+    }
+  } catch (error) {
+    console.error('Invalid credentials:', error);
+  }
+})();
