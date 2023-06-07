@@ -23,6 +23,7 @@
     "@cto.ai/sdk": "^2.4.3",
     "aws-cdk": "^2.79.1",
     "aws-cdk-lib": "^2.79.1",
+    "aws-sdk": "^2.1392.0",
     "commonjs": "^0.0.1",
     "constructs": "^10.0.5",
     "express": "^4.17.1",

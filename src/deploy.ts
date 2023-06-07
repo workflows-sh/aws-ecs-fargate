@@ -19,13 +19,21 @@ async function run() {
   await ux.print(`\n🛠 Loading the latest tags for ${ux.colors.green(STACK_TYPE)} environment and ${ux.colors.green(STACK_REPO)} service...`)
 
   async function retrieveCurrentlyDeployedImage(env: string, service: string): Promise<string> {
-    const ecsClusters: string[] = JSON.parse(execSync(
-      `aws ecs list-clusters --query "clusterArns[*]" --region $AWS_REGION`,
-      {
-        env: process.env
-      }
-    ).toString()) || []
+    let ecsClusters: string[] = [];
 
+    try {
+      const commandOutput: Buffer = execSync(
+        `aws ecs list-clusters --query "clusterArns[*]" --region $AWS_REGION`,
+        {
+          env: process.env
+        }
+      );
+      
+      ecsClusters = JSON.parse(commandOutput.toString()) || [];
+    } catch (error) {
+      console.error("An error occurred while retrieving ECS clusters:", error);
+    }
+    
     let ecsCluster: string = ""
 
     ecsClusters.forEach((clusterName: string) => {
@@ -36,27 +44,31 @@ async function run() {
     })
 
     if (ecsCluster) {
-      const ecsTask: string = execSync(
-        `aws ecs list-tasks --cluster ${ecsCluster} --service-name ${service} --query "taskArns[0]" --region $AWS_REGION`,
+      const ecsTasks: string[] = JSON.parse(execSync(
+        `aws ecs list-tasks --cluster ${ecsCluster} --service-name ${service} --query "taskArns" --region $AWS_REGION`,
         {
           env: process.env
         }
-      ).toString().trim()
-
-      if (ecsTask) {
-        const image: string = execSync(
-          `aws ecs describe-tasks --region $AWS_REGION --query=tasks[0].containers[0].image --cluster ${ecsCluster} --tasks ${ecsTask}`,
-          {
-            env: process.env
+      ).toString()) || [];
+    
+      for (const ecsTask of ecsTasks) {
+        try {
+          const image: string = execSync(
+            `aws ecs describe-tasks --region $AWS_REGION --query=tasks[0].containers[0].image --cluster ${ecsCluster} --tasks ${ecsTask}`,
+            {
+              env: process.env
+            }
+          ).toString().trim();
+    
+          if (image) {
+            return image.replace(/.+:/, "").replace(/"/, "");
           }
-        ).toString().trim()
-  
-        if (image) {
-          return image.replace(/.+:/, '').replace(/"/, '')
+        } catch (error) {
+          console.error("An error occurred while retrieving the image:", error);
         }
       }
     }
-
+    
     return ""
   }
 
@@ -124,12 +136,12 @@ async function run() {
   await ux.print(`📦 Deploying ${ux.colors.white(STACK_REPO)}:${ux.colors.white(STACK_TAG)} to ${ux.colors.green(STACK_ENV)} cluster`)
   console.log('\n')
 
-  await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
-    env: { 
-      ...process.env, 
+  await exec(`./node_modules/.bin/cdk diff ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
+    env: {
+      ...process.env,
       STACK_ENV: STACK_ENV,
-      STACK_TYPE: STACK_TYPE, 
-      STACK_REPO: STACK_REPO, 
+      STACK_TYPE: STACK_TYPE,
+      STACK_REPO: STACK_REPO,
       STACK_TAG: STACK_TAG
     }
   })
@@ -195,4 +207,19 @@ async function exec(cmd, env?: any | null) {
   })
 }
 
-run()
+// Run the main function only if the AWS Creds are set.
+(async () => {
+  try {
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  
+    if (accessKeyId && secretAccessKey) {
+      console.log('AWS credentials are set.');
+      run()
+    } else {
+      console.log('AWS credentials are not set.');
+    }
+  } catch (error) {
+    console.error('Invalid credentials:', error);
+  }
+})();
