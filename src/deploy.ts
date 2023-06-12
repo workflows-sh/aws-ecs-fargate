@@ -16,6 +16,23 @@ async function run() {
 
   const ecrRepoName: string = `${STACK_REPO}-${STACK_TYPE}`
 
+  // Validate if the AWS Creds are set.
+  try {
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+
+    if (accessKeyId && secretAccessKey) {
+      console.log('AWS credentials are set.');
+      // Proceed with the rest of the deployment logic
+    } else {
+      console.log('AWS credentials are not set.');
+      return;
+    }
+  } catch (error) {
+    console.error('Invalid credentials:', error);
+    return;
+  }
+
   await ux.print(`\n🛠 Loading the latest tags for ${ux.colors.green(STACK_TYPE)} environment and ${ux.colors.green(STACK_REPO)} service...`)
 
   async function retrieveCurrentlyDeployedImage(env: string, service: string): Promise<string> {
@@ -207,19 +224,4 @@ async function exec(cmd, env?: any | null) {
   })
 }
 
-// Run the main function only if the AWS Creds are set.
-(async () => {
-  try {
-    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-  
-    if (accessKeyId && secretAccessKey) {
-      console.log('AWS credentials are set.');
-      run()
-    } else {
-      console.log('AWS credentials are not set.');
-    }
-  } catch (error) {
-    console.error('Invalid credentials:', error);
-  }
-})();
+run()
