@@ -48,7 +48,7 @@ export function secretValuePrompt () {
         SECRET_VALUE: string
     }>({
         type: 'input',
-        name: 'SECRET_NAME',
+        name: 'SECRET_VALUE',
         message: 'What is the value for the secret?',
         allowEmpty: false
     })
@@ -56,7 +56,7 @@ export function secretValuePrompt () {
 
 export function secretKeyPrompt () {
     return ux.prompt < {
-        SECRET_VALUE: string
+        SECRET_NAME: string
     }>({
         type: 'input',
         name: 'SECRET_NAME',
