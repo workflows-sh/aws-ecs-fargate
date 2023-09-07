@@ -1,9 +1,6 @@
 import fs from 'fs'
-import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
 import { exec as oexec, execSync } from 'child_process';
-const pexec = util.promisify(oexec);
-const ARGS = require('minimist')(process.argv.slice(2));
 import { stackEnvPrompt, stackRepoPrompt, stackTagPrompt } from './prompts';
 
 async function run() {
