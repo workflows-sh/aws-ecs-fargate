@@ -1,43 +1,130 @@
 import fs from 'fs'
-import util from 'util';
 import { ux, sdk } from '@cto.ai/sdk';
-import { exec as oexec } from 'child_process';
-const pexec = util.promisify(oexec);
-
+import { exec as oexec, execSync } from 'child_process';
+import { stackEnvPrompt, stackRepoPrompt, stackTagPrompt } from './prompts';
 
 async function run() {
 
   const STACK_TYPE = process.env.STACK_TYPE || 'aws-ecs-fargate';
   const STACK_TEAM = process.env.OPS_TEAM_NAME || 'private'
 
-  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
+  const { STACK_ENV } = await stackEnvPrompt()
+  const { STACK_REPO } = await stackRepoPrompt()
 
-  const { STACK_ENV } = await ux.prompt<{
-    STACK_ENV: string
-  }>({
-      type: 'input',
-      name: 'STACK_ENV',
-      default: 'dev',
-      message: 'What is the name of the environment?'
+  const ecrRepoName: string = `${STACK_REPO}-${STACK_TYPE}`
+
+  // Validate if the AWS Creds are set.
+  try {
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+
+    if (accessKeyId && secretAccessKey) {
+      console.log('AWS credentials are set.');
+      // Proceed with the rest of the deployment logic
+    } else {
+      console.log('AWS credentials are not set.');
+      return;
+    }
+  } catch (error) {
+    console.error('Invalid credentials:', error);
+    return;
+  }
+
+  await ux.print(`\n🛠 Loading the latest tags for ${ux.colors.green(STACK_TYPE)} environment and ${ux.colors.green(STACK_REPO)} service...`)
+
+  async function retrieveCurrentlyDeployedImage(env: string, service: string): Promise<string> {
+    let ecsClusters: string[] = [];
+
+    try {
+      const commandOutput: Buffer = execSync(
+        `aws ecs list-clusters --query "clusterArns[*]" --region $AWS_REGION`,
+        {
+          env: process.env
+        }
+      );
+      
+      ecsClusters = JSON.parse(commandOutput.toString()) || [];
+    } catch (error) {
+      console.error("An error occurred while retrieving ECS clusters:", error);
+    }
+    
+    let ecsCluster: string = ""
+
+    ecsClusters.forEach((clusterName: string) => {
+      const re = new RegExp(`cluster\/${env}`)
+      if (re.test(clusterName)) {
+        ecsCluster = clusterName
+      }
     })
 
-  const { STACK_REPO } = await ux.prompt<{
-    STACK_REPO: string
-  }>({
-      type: 'input',
-      name: 'STACK_REPO',
-      default: 'sample-expressjs-aws-ecs-fargate',
-      message: 'What is the name of the application repo?'
-    })
+    if (ecsCluster) {
+      const ecsTasks: string[] = JSON.parse(execSync(
+        `aws ecs list-tasks --cluster ${ecsCluster} --service-name ${service} --query "taskArns" --region $AWS_REGION`,
+        {
+          env: process.env
+        }
+      ).toString()) || [];
+    
+      for (const ecsTask of ecsTasks) {
+        try {
+          const image: string = execSync(
+            `aws ecs describe-tasks --region $AWS_REGION --query=tasks[0].containers[0].image --cluster ${ecsCluster} --tasks ${ecsTask}`,
+            {
+              env: process.env
+            }
+          ).toString().trim();
+    
+          if (image) {
+            return image.replace(/.+:/, "").replace(/"/, "");
+          }
+        } catch (error) {
+          console.error("An error occurred while retrieving the image:", error);
+        }
+      }
+    }
+    
+    return ""
+  }
 
-  const { STACK_TAG } = await ux.prompt<{
-    STACK_TAG: string
+  const currentImage = await retrieveCurrentlyDeployedImage(STACK_ENV, STACK_REPO)
+  await ux.print(`\n🖼️  Currently deployed image - ${ux.colors.green(currentImage)}\n`)
+
+  const ecrImages: string[] = JSON.parse(execSync(
+    `aws ecr describe-images --region=$AWS_REGION --repository-name ${ecrRepoName} --query "reverse(sort_by(imageDetails,& imagePushedAt))[*].imageTags[0]"`,
+    {
+      env: process.env
+    }
+  ).toString().trim()) || []
+
+  const defaultImage = ecrImages.length ? ecrImages[0] : undefined
+  const imageTagLimit = 20
+  let { STACK_TAG }: any = ''
+  
+  const { STACK_TAG_CUSTOM } = await ux.prompt<{
+    STACK_TAG_CUSTOM: boolean
   }>({
+    type: 'confirm',
+    name: 'STACK_TAG_CUSTOM',
+    default: false,
+    message: 'Do you want to deploy a custom image?'
+  });
+
+  if (STACK_TAG_CUSTOM){
+    ({ STACK_TAG } = await ux.prompt<{
+      STACK_TAG: string
+    }>({
       type: 'input',
       name: 'STACK_TAG',
-      default: 'main',
-      message: 'What is the name of the tag or branch?'
-    })
+      message: 'What is the name of the tag or branch?',
+      allowEmpty: false
+    }))
+  } else {
+    ({ STACK_TAG } = await stackTagPrompt(
+      ecrImages.slice(0, ecrImages.length < imageTagLimit ? ecrImages.length : imageTagLimit), 
+      currentImage || defaultImage
+    ))
+  }
+  await ux.print(`\n🛠 Loading the ${ux.colors.white(STACK_TYPE)} stack for the ${ux.colors.white(STACK_TEAM)}...\n`)
 
   const STACKS:any = {
     'dev': [`${STACK_REPO}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_TYPE}`, `${STACK_ENV}-${STACK_REPO}-${STACK_TYPE}`],
@@ -64,11 +151,11 @@ async function run() {
   console.log('\n')
 
   await exec(`./node_modules/.bin/cdk deploy ${STACKS[STACK_ENV].join(' ')} --outputs-file outputs.json`, {
-    env: { 
-      ...process.env, 
+    env: {
+      ...process.env,
       STACK_ENV: STACK_ENV,
-      STACK_TYPE: STACK_TYPE, 
-      STACK_REPO: STACK_REPO, 
+      STACK_TYPE: STACK_TYPE,
+      STACK_REPO: STACK_REPO,
       STACK_TAG: STACK_TAG
     }
   })
