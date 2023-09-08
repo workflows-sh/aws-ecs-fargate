@@ -6,7 +6,7 @@ export function stackEnvPrompt () {
     } > ({
         type: 'list',
         name: 'STACK_ENV',
-        choices: ['dev', 'stg', 'prd'],
+        choices: ['dev', 'stg', 'prd', 'all'],
         default: 'dev',
         message: 'What is the name of the environment?',
     })
