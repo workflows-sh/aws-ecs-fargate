@@ -30,7 +30,8 @@ export function stackTagPrompt (tags: string[] = [], defaultValue?: string | num
         type: 'list',
         name: 'STACK_TAG',
         message: 'What is the name of the tag or branch?',
-        choices: tags
+        choices: tags,
+        default: defaultValue
     }
     : {
         type: 'input',

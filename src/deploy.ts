@@ -86,15 +86,15 @@ async function run() {
     return ""
   }
 
+  const currentImage = await retrieveCurrentlyDeployedImage(STACK_ENV, STACK_REPO)
+  await ux.print(`\n🖼️  Currently deployed image - ${ux.colors.green(currentImage)}\n`)
+
   const ecrImages: string[] = JSON.parse(execSync(
     `aws ecr describe-images --region=$AWS_REGION --repository-name ${ecrRepoName} --query "reverse(sort_by(imageDetails,& imagePushedAt))[*].imageTags[0]"`,
     {
       env: process.env
     }
   ).toString().trim()) || []
-
-  const currentImage = await retrieveCurrentlyDeployedImage(STACK_ENV, STACK_REPO)
-  await ux.print(`\n🖼️  Currently deployed image - ${ux.colors.green(currentImage)}\n`)
 
   const defaultImage = ecrImages.length ? ecrImages[0] : undefined
   const imageTagLimit = 20
