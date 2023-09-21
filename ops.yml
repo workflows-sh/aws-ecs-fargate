@@ -1,7 +1,7 @@
 version: "1"
 commands:
 # setup aws ecs fargate infrastructure
-  - name: setup-aws-ecs-fargate:0.3.0
+  - name: setup-aws-ecs-fargate:0.3.2
     run: ./node_modules/.bin/ts-node /ops/src/setup.ts
     description: "setup an environment"
     # environment variables 
@@ -28,7 +28,7 @@ commands:
         - STG_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
         - PRD_AWS_ECS_FARGATE_SERVICE_VAULT_ARN
   # deploy environment on aws ecs fargate workflow
-  - name: deploy-aws-ecs-fargate:0.3.1
+  - name: deploy-aws-ecs-fargate:0.3.2
     run: ./node_modules/.bin/ts-node /ops/src/deploy.ts
     description: "deploy to an environment"
     env:
